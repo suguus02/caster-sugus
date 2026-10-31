@@ -1298,7 +1298,7 @@ function processRows(rows,db,opts){
     let cur=null;
     for(const m of base){
       if(!newFmt){matches.push(Object.assign({},m,{w:m.y===1?1:0,l:m.y===0?1:0,dr:m.y===0.5?1:0,sc:''}));continue}
-      if(!cur||cur.n>=5||cur.w>=2||cur.l>=2||(m.ht&&cur.ht&&m.t-cur.last>900)){ // a set ends when one side has 2 wins (Bo3): a rematch with the same comps is a new set
+      if(!cur||cur.n>=9||cur.w>=2||cur.l>=2||(m.ht&&cur.ht&&m.t-cur.last>900)){ // a set ends when one side has 2 wins (Bo3), after 15 min without a game or after 9 games (draws are replayed): a rematch with the same comps is a new set
       cur=Object.assign({},m,{w:0,l:0,dr:0,n:0,last:m.t});matches.push(cur)}
       cur.n++;cur.last=m.t;if(m.y===1)cur.w++;else if(m.y===0)cur.l++;else cur.dr++;
     }
