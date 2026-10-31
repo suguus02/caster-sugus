@@ -3218,7 +3218,7 @@ function casRange(){const last=casLast(),to=CAS.to||last,from=CAS.from||balFromD
 let _casK='',_casV=null;
 function casRows(){const F=FULL||ds,R=casRange(),k=(F.matches||[]).length+'|'+R.from+'|'+R.to+'|'+(F.matches&&F.matches[0]&&F.matches[0].t);if(_casK===k&&_casV)return _casV;
   const L=[];for(const m of F.matches||[]){if(m.s||m.y===0.5||!m.d||m.d<R.from||m.d>R.to)continue;const md=modeOfMap(m.m),A_=casU(m.a),B_=m.sh?'':casU(m.b);
-    for(const [t,o,win,br] of [[A_,B_,m.y,m.ba],[B_,A_,1-m.y,m.bb]]){if(!t)continue;L.push({t,o,win,map:m.m,mk:mkey(m.m),md,br:[...new Set((br||[]).filter(Boolean).map(x=>String(x).toUpperCase()))]})}}
+    for(const [t,o,win,br,ot,mt] of [[A_,B_,m.y,m.ba,m.tb,m.ta],[B_,A_,1-m.y,m.bb,m.ta,m.tb]]){if(!t)continue;L.push({t,o,win,ot:(ot||[]).filter(Boolean),mt:(mt||[]).filter(Boolean),map:m.m,mk:mkey(m.m),md,br:[...new Set((br||[]).filter(Boolean).map(x=>String(x).toUpperCase()))]})}}
   _casK=k;_casV=L;return L}
 // the teams of the chosen tournament / region / the chosen ones: Team A, Team B and every table of several teams use exactly these
 function casGroup(teams){
@@ -3241,14 +3241,17 @@ function casterTab(){
   if(!G.includes(CAS.b)||CAS.b===CAS.a)CAS.b=G.find(t=>t!==CAS.a)||'';
   const MODES_=(MODELIST&&MODELIST.length?MODELIST:[]),maps=MODES_.flatMap(x=>x[1]);if(!maps.includes(CAS.map))CAS.map=maps[0]||'';
   const A=CAS.a,B=CAS.b,MAP=CAS.map,MD=modeOfMap(MAP)||'',MC=MODE_COL[mkey(MD)]||'#8e8ab0',R=casRange(),GS=new Set(G);
-  const rows=casRows(),onMap=x=>x.mk===mkey(MAP),RA=rows.filter(x=>x.t===A&&onMap(x)),RB=rows.filter(x=>x.t===B&&onMap(x)),RG=rows.filter(x=>GS.has(x.t)&&onMap(x));
+  // only the official trio (the 3 players of the team in the Picks sheet) or every set of the team
+  const offOK=(t,tags)=>{const P=((FULL&&FULL.pickPlayers&&(FULL.pickPlayers[t]||FULL.pickPlayers[casOrig[t]]))||[]).slice(0,3).map(p_=>new Set((p_.tags||[]).map(g=>String(g).toUpperCase()))).filter(s_=>s_.size);
+    return !P.length||P.every(s_=>tags.some(g=>s_.has(String(g).toUpperCase())))};
+  const rows=CAS.trio==='off'?casRows().filter(x=>offOK(x.t,x.mt)):casRows(),onMap=x=>x.mk===mkey(MAP),RA=rows.filter(x=>x.t===A&&onMap(x)),RB=rows.filter(x=>x.t===B&&onMap(x)),RG=rows.filter(x=>GS.has(x.t)&&onMap(x));
   const tcA='#3d6ff0',tcB='#e5484d'; // Team A (left) blue, Team B (right) red
   const cmpLbl=CAS.cmp==='reg'?(CAS.cvR||'these teams'):(CAS.cvT||'these teams');
   // controls (one line each): compare with + dates, then the maps
   const tours=[...new Set(teams.map(casTour).filter(Boolean))],regs=[...new Set(teams.map(casReg).filter(Boolean))].sort();
   const vals=CAS.cmp==='reg'?regs:tours,cur=CAS.cmp==='reg'?CAS.cvR:CAS.cvT;
   const top=`<div class="cas-top"><label>Compare</label><span class="cas-seg">${[['tour','Tournament'],['reg','Region']].map(([v,l])=>`<button type="button" data-cascmp="${v}" aria-pressed="${CAS.cmp===v}">${l}</button>`).join('')}</span>
-    <span class="cas-opt">${vals.map(v=>`<button type="button" data-cascv="${esc(v)}" aria-pressed="${v===cur}">${esc(v)}</button>`).join('')}</span><small>${G.length} teams</small>
+    <span class="cas-opt">${vals.map(v=>`<button type="button" data-cascv="${esc(v)}" aria-pressed="${v===cur}">${esc(v)}</button>`).join('')}</span><small>${G.length} teams</small><label style="margin-left:12px">Sets</label><span class="cas-seg">${[['all','All sets'],['off','Official trios']].map(([v,l])=>`<button type="button" data-castrio="${v}" aria-pressed="${(CAS.trio||'all')===v}" title="${v==='off'?'Only the sets where each team plays with its 3 players of the Picks sheet':'Every set of each team, with any trio'}">${l}</button>`).join('')}</span>
     <span class="cas-dt"><label>Dates</label><input type="date" data-casd="from" value="${R.from}"><i>–</i><input type="date" data-casd="to" value="${R.to}"></span></div>`;
   const maps_=`<div class="cas-maps">${MODES_.map(([mode,ms])=>{const c=MODE_COL[mkey(mode)]||'#8e8ab0',ic=IMGS['mode'+mkey(mode)]?`<img class="cas-mi" src="${IMGS['mode'+mkey(mode)]}" alt="" title="${esc(mode)}">`:'';
     return `<span class="cas-mg" style="--m:${c}">${ic}${ms.map(m=>`<button type="button" class="cas-mp${m===MAP?' on':''}" data-casmap="${esc(m)}" title="${esc(mode)} · ${esc(m)}">${esc(m)}</button>`).join('')}</span>`}).join('')}</div>`;
@@ -3276,10 +3279,14 @@ function casterTab(){
   const teamT=(id,t,flt,tip)=>{const arr=G.map(tm=>{const L=rows.filter(x=>x.t===tm&&flt(x));return {t:tm,n:L.length,w:L.reduce((a,x)=>a+x.win,0)}}).filter(x=>x.n);
     const rs=casSort(arr,id,'wr').map((x,i)=>`<tr${rowAttr(x.t)}><td class="rk">${i+1}</td><td><div class="cas-tm">${logo(x.t,'l20')}<span>${esc(x.t)}</span></div></td><td class="num">${x.n}</td><td class="num cas-w" style="${casWr(x.w/x.n,x.n)}">${casPc(x.w,x.n)}</td><td class="num mut">${x.w}–${x.n-x.w}</td></tr>`).join('');
     return `<div class="cas-card">${head(t,casTog(id,[['wr','Win rate'],['n','Sets']],'wr'),null,tip)}<table class="cas-t"><thead><tr><th class="rk"></th><th>Team</th><th class="num cw">Sets</th><th class="num cw2">Win</th><th class="num cw3">W–L</th></tr></thead><tbody>${rs||'<tr><td colspan="5" class="msg">No sets.</td></tr>'}</tbody></table></div>`};
-  const rivT=(t,col)=>{const id='riv'+(t===A?'A':'B'),c={};for(const x of rows){if(x.t!==t||!x.o||!(REGION[x.o]||TOUR[x.o]||teams.includes(x.o)||(M&&M.D&&M.D.off.includes(x.o))))continue;const e=c[x.o]||(c[x.o]={t:x.o,n:0,w:0});e.n++;e.w+=x.win}
+  // the 5 most played rivals: a team of the list by its name and logo, any other rival by its 3 players (one under the other)
+  const nmOf=g=>sheetName(g,((FULL&&FULL.names)||ds.names||{})[g])||g;
+  const rivT=(t,col)=>{const id='riv'+(t===A?'A':'B'),c={};for(const x of rows){if(x.t!==t)continue;const isT=x.o&&teams.includes(x.o),k=isT?x.o:'#'+x.ot.slice().sort().join(',');if(k==='#')continue;
+      const e=c[k]||(c[k]={k,t:isT?x.o:'',tags:x.ot.slice(),n:0,w:0});e.n++;e.w+=x.win}
     const arr=casSort(Object.values(c),id,'n').slice(0,5);
-    const rs=arr.map(x=>`<tr${x.t===A||x.t===B?rowAttr(x.t):''}><td><div class="cas-tm">${logo(x.t,'l20')}<span>${esc(x.t)}</span></div></td><td class="num">${x.n}</td><td class="num cas-w" style="${casWr(x.w/x.n,x.n)}">${casPc(x.w,x.n)}</td><td class="num mut">${x.w}–${x.n-x.w}</td></tr>`).join('');
-    return `<div class="cas-sub" style="--c:${col}">${head(`${logo(t,'l20')} Most played rivals`,casTog(id,[['n','Sets'],['wr','Win rate']],'n'),col,'most played rivals, sets on every map')}<table class="cas-t"><tbody>${rs||'<tr><td colspan="4" class="msg">No sets against registered teams.</td></tr>'}</tbody></table></div>`};
+    const who=x=>x.t?`<div class="cas-tm">${logo(x.t,'l20')}<span>${esc(x.t)}</span></div>`:`<div class="cas-pl">${x.tags.map(g=>`<span>${esc(nmOf(g))}</span>`).join('')}</div>`;
+    const rs=arr.map(x=>`<tr${x.t===A||x.t===B?rowAttr(x.t):''}><td>${who(x)}</td><td class="num">${x.n}</td><td class="num cas-w" style="${casWr(x.w/x.n,x.n)}">${casPc(x.w,x.n)}</td><td class="num mut">${x.w}–${x.n-x.w}</td></tr>`).join('');
+    return `<div class="cas-sub" style="--c:${col}">${head(`${logo(t,'l20')} Most played rivals`,casTog(id,[['n','Sets'],['wr','Win rate']],'n'),col,'the 5 rivals '+t+' played the most sets against (every map); rivals that are not in the list are shown by their 3 players')}<table class="cas-t"><tbody>${rs||'<tr><td colspan="4" class="msg">No sets.</td></tr>'}</tbody></table></div>`};
   return `<div class="cas" title="">${top}${maps_}<div class="cas-head">${chips(A,'casa')}${hdr(A,hA,tcA)}${mid}${hdr(B,hB,tcB,1)}${chips(B,'casb')}</div>
     <div class="cas-g4">${pkT('pkA',`${logo(A,'l20')} ${esc(A)}`,RA,tcA)}${pkT('pkG','Selected map · total picks',RG,'var(--accent,#d63a50)')}${duoT()}${pkT('pkB',`${logo(B,'l20')} ${esc(B)}`,RB,tcB)}</div>
     <div class="cas-g5"><div class="cas-card cas-rv">${rivT(A,tcA)}</div>${teamT('wMap','Win rate · '+esc(MAP),onMap,'sets on '+MAP)}${teamT('wMode','Win rate · '+esc(MD),x=>x.md===MD,'sets on every '+MD+' map')}${teamT('wAll','Win rate · all maps',()=>true,'sets on every map and mode')}<div class="cas-card cas-rv">${rivT(B,tcB)}</div></div>
@@ -3288,10 +3295,11 @@ function casterTab(){
 function casFit(){const el=document.querySelector('.cas');if(!el||!window.CASTER_ONLY)return;el.style.zoom='';const r=el.getBoundingClientRect(),avH=window.innerHeight-r.top-window.scrollY*0-6,avW=document.documentElement.clientWidth-2*Math.max(8,r.left);
   const z=Math.max(.55,Math.min(1,avH/r.height,avW/r.width));if(z<.995)el.style.zoom=z.toFixed(3)}
 window.addEventListener('resize',()=>{if(tab==='caster')casFit()});
-document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-casa],[data-casb],[data-casmap],[data-cascmp],[data-cascv],[data-caspick],[data-cassort]');if(!t)return;const d=t.dataset;
+document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-casa],[data-casb],[data-casmap],[data-cascmp],[data-castrio],[data-cascv],[data-caspick],[data-cassort]');if(!t)return;const d=t.dataset;
   if(d.casa!=null){CAS.a=d.casa;if(CAS.b===CAS.a)CAS.b=''}else if(d.casb!=null){CAS.b=d.casb;if(CAS.a===CAS.b)CAS.a=''}else if(d.casmap!=null)CAS.map=d.casmap;
   else if(d.cascmp!=null)CAS.cmp=d.cascmp;else if(d.cascv!=null){if(CAS.cmp==='reg')CAS.cvR=d.cascv;else CAS.cvT=d.cascv}
   else if(d.caspick!=null){const i=CAS.pick.indexOf(d.caspick);if(i>=0)CAS.pick.splice(i,1);else CAS.pick.push(d.caspick)}
+  else if(d.castrio!=null)CAS.trio=d.castrio;
   else if(d.cassort!=null){const [id,v]=d.cassort.split(':');CAS.sort[id]=v}
   casSave();renderDetail()});
 document.addEventListener('change',e=>{const t=e.target.closest&&e.target.closest('[data-casd]');if(!t)return;const v=t.value||'',last=casLast();
@@ -5327,6 +5335,7 @@ h3.sec-h:before,h3.sec-h:after,.gt-sec>.lbl:before,.gt-sec>.lbl:after,.tc-sec.sc
 .cas-g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--g);margin-bottom:var(--g);align-items:start}
 .cas-g5{display:grid;grid-template-columns:minmax(0,.85fr) repeat(3,minmax(0,1fr)) minmax(0,.85fr);gap:var(--g);margin-bottom:var(--g);align-items:start}
 .cas-g5 .cas-tm span{white-space:normal;line-height:1.08;font-size:11.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.cas-g5 .cas-t td{height:28px}
+.cas-pl{display:flex;flex-direction:column;line-height:1.15;font-size:11px;padding:2px 0}.cas-pl span{overflow:hidden;text-overflow:ellipsis}
 .cas-mp:focus{outline:none}.cas-mp:focus-visible{outline:2px solid #fff}
 .cas-card{background:rgba(255,255,255,.03);border:1px solid #2c2a3a;border-radius:10px;overflow:hidden;border-top:3px solid var(--c,#2c2a3a)}
 .cas-rv{border-top-color:#2c2a3a}.cas-sub{border-top:3px solid var(--c)}.cas-sub+.cas-sub{margin-top:6px}
