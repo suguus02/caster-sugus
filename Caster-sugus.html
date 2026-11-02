@@ -2093,13 +2093,17 @@ const LUREG2={};
 function luChip(e,team,fk,idx,on){const R=new Set(((FULL&&FULL.pickPlayers&&FULL.pickPlayers[String(team).toUpperCase()])||[]).map(p=>String(p.name||'').trim().toUpperCase()).filter(Boolean));
   const names=String(e.nm||e.k).split(' · '),n=e.w+e.l,wr=n?e.w/n:null;
   return `<button type="button" class="luc${on?' on':''}" data-fk="${fk}" data-lu="${idx}" title="${esc(names.join(' · '))} · ${e.g} games · last played ${esc(fmtDate(e.d))}${e.reg?'':' · with pick-ups'}"><span class="lucn">${names.map(x=>`<span class="${R.size&&!R.has(x.trim().toUpperCase())?'lpk':''}">${esc(x)}</span>`).join('')}</span>${e.reg?'<em class="luoff">OFFICIAL</em>':''}<span class="lucf"><b>${e.s} ${e.s===1?'set':'sets'}</b><i style="${wr==null?'':gtHeat(wr,n)}">${wr==null?'–':Math.round(100*wr)+'%'}</i></span></button>`}
+const LUOPEN=new Set();
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-luexp]');if(!b)return;const k=b.dataset.luexp,c=b.closest('.lutc');if(LUOPEN.has(k))LUOPEN.delete(k);else LUOPEN.add(k);
+  const op=LUOPEN.has(k);c.classList.toggle('open',op);b.textContent=(op?'▴':'▾')+b.textContent.slice(1)});
 function luCardsHTML(fk,groups,sel,all,nsel,total,teamClick){
   const on=e=>!sel||sel.has(e.k),reg=LUREG2[fk]||new Set(),regOn=!!sel&&reg.size>0&&groups.every(g=>g.es.every(e=>reg.has(e.k)===sel.has(e.k)));
   const cards=groups.map(g=>{const s=g.es.filter(on).reduce((a,e)=>a+e.s,0),ts=g.es.reduce((a,e)=>a+e.s,0);
-    return `<div class="lutc" style="--c:${tcolL(g.team)}"><${teamClick?`button type="button" data-lut="${esc(g.team)}" title="Tick / untick all the trios of ${esc(g.team)}"`:'div'} class="luth">${logo(g.team,'l20')}<b>${esc(g.team)}</b><span>${s===ts?ts+' sets':s+' of '+ts+' sets'}</span></${teamClick?'button':'div'}>
+    const op=LUOPEN.has(fk+'|'+g.team),ns=g.es.filter(on).length;
+    return `<div class="lutc${op?' open':''}" style="--c:${tcolL(g.team)}"><div class="luhd"><${teamClick?`button type="button" data-lut="${esc(g.team)}" title="Tick / untick all the trios of ${esc(g.team)}"`:'div'} class="luth">${logo(g.team,'l20')}<b>${esc(g.team)}</b><span>${s===ts?ts+' sets':s+' of '+ts+' sets'}</span></${teamClick?'button':'div'}><button type="button" class="luexp" data-luexp="${esc(fk+'|'+g.team)}" title="Show / hide the lineups of ${esc(g.team)}">${op?'▴':'▾'} ${ns===g.es.length?g.es.length:ns+' of '+g.es.length} lineups</button></div>
       <div class="luchips">${g.es.map(e=>luChip(e,g.team,fk,g.idx(e),on(e))).join('')}</div></div>`}).join('');
   return `<div class="lub2${groups.length>1?' many':''}"><div class="lutop"><span class="luttl">Lineups · players who played together</span><span class="lubs"><button type="button" data-fk="${fk}" data-luset="all" aria-pressed="${all}">Everything</button><button type="button" data-fk="${fk}" data-luset="reg" aria-pressed="${regOn}"${reg.size?'':' disabled'}>Only official trios</button></span></div>
-    <div class="lucards">${cards}</div><div class="lus">${nsel} of ${total} lineups selected · pick-ups in <span class="lpk">yellow</span> · click a trio to tick / untick it</div></div>`}
+    <div class="lucards">${cards}</div><div class="lus">${nsel} of ${total} lineups selected · pick-ups in <span class="lpk">yellow</span> · open a team (▾) and click a trio to tick / untick it</div></div>`}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-luset]');if(!b||b.disabled)return;const k=b.dataset.fk||'',keys=LUK[k]||[],reg=LUREG2[k]||new Set();
   if(b.dataset.luset==='all')LUS[k]=null;else{const cur=LUS[k],same=cur&&keys.every(x=>reg.has(x)===cur.has(x));LUS[k]=same||!reg.size?null:new Set(reg)}renderDetail()});
 const LUREG={};
@@ -3342,7 +3346,7 @@ document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest
   if(d.prmap!=null){const m=d.prmap,k=sel.maps.indexOf(m);if(k>=0)sel.maps.splice(k,1);else{if(!D.maps.includes(m))return;sel.maps.push(m)}saveSel();render()}});
 // ===== easier to use: top bar, share, scouting index, team stats tabs, data check =====
 (function(){const ft=$('fType'),host=$('uxGamesHost');if(ft&&host)host.appendChild(ft);
-  const cal=$('uxCal'),pg=$('rcal')&&$('rcal').closest('.pgrp');if(pg&&cal)cal.appendChild(pg);
+  const cal=$('uxCal'),pg=$('rcal')&&$('rcal').closest('.pgrp');if(cal){const x=document.createElement('button');x.type='button';x.id='uxCalX';x.title='Close';x.textContent='✕';cal.appendChild(x)}if(pg&&cal)cal.appendChild(pg);
   const all=$('sheetAll');if(all&&cal){const w=document.createElement('div');w.className='uxcalx';w.appendChild(all);cal.appendChild(w)}})();
 function uxPerLabel(){const t=$('uxPerT');if(!t)return;t.textContent=RC.from&&RC.to?fmtDate(RC.from)+' – '+fmtDate(RC.to):'–'}
 function uxCal(open){const c=$('uxCal'),b=$('uxPer');if(!c)return;c.hidden=!open;b.setAttribute('aria-expanded',open?'true':'false');if(open){const r=b.getBoundingClientRect(),pr=b.closest('.panel').getBoundingClientRect();c.style.left=(r.left-pr.left)+'px'}}
@@ -3350,7 +3354,7 @@ document.addEventListener('click',e=>{const t=e.target;
   if(t.closest&&t.closest('#uxPer')){uxCal($('uxCal').hidden);return}
   if(t.closest&&t.closest('#uxRef')){const g=$('sheetGo');if(g)g.click();return}
   if(t.closest&&t.closest('#uxShare')){uxShare();return}
-  const c=$('uxCal');if(c&&!c.hidden&&!(t.closest&&(t.closest('#uxCal')||t.closest('#uxPer'))))uxCal(false)});
+  if(t.closest&&t.closest('#uxCalX'))uxCal(false)});
 function uxToast(msg){let d=$('uxToast');if(!d){d=document.createElement('div');d.id='uxToast';document.body.appendChild(d)}d.textContent=msg;d.className='on';clearTimeout(uxToast.t);uxToast.t=setTimeout(()=>{d.className=''},3500)}
 function uxShare(){const q=new URLSearchParams();q.set('v',view);if(view==='stats')q.set('t',tab);
   try{if(view==='stats'&&M){q.set('one',curOne());if(SC.rival)q.set('r',SC.rival);if(SC.us)q.set('u',SC.us);if(SC.map)q.set('m',SC.map)}}catch(e){}
@@ -3389,8 +3393,8 @@ document.addEventListener('click',e=>{const g=e.target.closest&&e.target.closest
 let uxTab=store.get('tvt:uxtab')||'br';
 function uxStatsTabs(){const d=$('detail');if(!d||d.querySelector('.uxtabs'))return;const ch=[...d.children];if(!ch.some(c=>c.classList.contains('fwrap')))return;
   const first=ch.findIndex(c=>c.classList.contains('toolrow'));if(first<0)return;let g='br';const G={br:[],log:[],pl:[],ty:[]};
-  ch.slice(first).forEach(c=>{const t=(c.tagName==='H3'?c.innerText:'').toUpperCase();if(c.classList.contains('fwrap'))g='log';else if(/PLAYER STATS/.test(t))g='pl';else if(/TYPE COMBINATIONS/.test(t))g='ty';G[g].push(c);c.dataset.uxg=g});
-  const names=[['br','Brawlers & combos'],['log','Filters & set log'],['pl','Players'],['ty','Types']].filter(([k])=>G[k].length);if(!names.some(([k])=>k===uxTab))uxTab='br';
+  ch.slice(first).forEach(c=>{const t=(c.tagName==='H3'?c.innerText:'').toUpperCase();if(/PLAYER STATS/.test(t))g='pl';else if(/TYPE COMBINATIONS/.test(t))g='ty';if(/PLAYER STATS|TYPE COMBINATIONS/.test(t))c.classList.add('uxnotitle');G[g].push(c);c.dataset.uxg=g});
+  const names=[['br','Brawlers, combos & set log'],['pl','Players'],['ty','Types']].filter(([k])=>G[k].length);if(!names.some(([k])=>k===uxTab))uxTab='br';
   const bar=document.createElement('div');bar.className='uxtabs';bar.innerHTML=names.map(([k,l])=>`<button type="button" data-uxtab="${k}" aria-pressed="${k===uxTab}">${l}</button>`).join('');ch[first].before(bar);uxShowTab()}
 function uxShowTab(){document.querySelectorAll('#detail [data-uxg]').forEach(c=>c.classList.toggle('uxhide',c.dataset.uxg!==uxTab));document.querySelectorAll('#detail [data-uxtab]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.uxtab===uxTab))}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-uxtab]');if(!b)return;uxTab=b.dataset.uxtab;store.set('tvt:uxtab',uxTab);uxShowTab()});
@@ -3458,12 +3462,14 @@ function groupTab(){
   const RG=t=>REGION[t]||'',regs=[...new Set(T.map(RG).filter(Boolean))],allR=['North America','South America','EMEA','APAC','China'].filter(r=>Object.values(REGION).includes(r));
   let regH='';
   if(regs.length){
-    const mx=regs.map(r=>`<tr><td class="gt-c gt-who"><span class="gt-tn"><i class="gt-rd" style="background:${REGC[r]}"></i><b>${esc(r)}</b></span></td>${allR.map(c=>{let w=0,n=0;for(const t of T){if(RG(t)!==r)continue;for(const x of per[t]){if(x.m.sh)continue;if(x.op&&x.op!==t&&RG(x.op)===c){n++;w+=x.win}}}
-      return n?`<td class="gt-c" style="${gtHeat(w/n,n)}"><b>${pc(w,n)}</b><small>${w}W-${n-w}L</small></td>`:'<td class="gt-c gt-0"><small>0W-0L</small></td>'}).join('')}</tr>`).join('');
+    const pc1=(w,n)=>n?Math.round(100*w/n)+'%':'–';
+    const mx=regs.map(r=>{let tw=0,tn=0;const cells=allR.map(c=>{if(c===r)return '<td class="hh-c"><i class="hh-x"></i></td>';let w=0,n=0;for(const t of T){if(RG(t)!==r)continue;for(const x of per[t]){if(x.m.sh)continue;if(x.op&&x.op!==t&&RG(x.op)===c){n++;w+=x.win}}}tw+=w;tn+=n;
+      return n?`<td class="hh-c" title="${esc(r)} ${w}-${n-w} vs ${esc(c)}"><i style="${gtHeat(w/n,n)}"><small>Sets: ${n}</small><b>WR: ${pc1(w,n)}</b></i></td>`:'<td class="hh-c"></td>'}).join('');
+      return `<tr><td class="hh-tot"><small>Sets: ${tn}</small><b style="color:${tn?(tw/tn>=.55?'#7ee2a0':tw/tn<.45?'#ff8a80':'#ffc861'):'inherit'}">WR: ${pc1(tw,tn)}</b></td><td class="hh-who hh-rg"><i class="gt-rd" style="background:${REGC[r]}"></i><span>${esc(r)}</span></td>${cells}</tr>`}).join('');
     const tb=regs.map(r=>{const ts=T.filter(t=>RG(t)===r);let w=0,n=0;for(const t of ts)for(const x of per[t]){n++;w+=x.win}return {r,ts,w,n}}).sort((a,b)=>(b.n?b.w/b.n:0)-(a.n?a.w/a.n:0));
-    regH=sec('Region head to head',`<div class="gt-scroll"><table class="gt-t"><thead><tr><th class="gt-c">Region</th>${allR.map(c=>`<th class="gt-c"><span class="gt-tn"><i class="gt-rd" style="background:${REGC[c]}"></i>vs ${esc(c)}</span></th>`).join('')}</tr></thead><tbody>${mx}</tbody></table></div>
+    regH=sec('Region head to head',`<div class="hh-wrap"><table class="hh-t"><thead><tr><th class="hh-tot">Sets and WR vs other regions</th><th></th>${allR.map(c=>`<th class="hh-c hh-ch hh-rgh"><i class="gt-rd" style="background:${REGC[c]}"></i><span>vs ${esc(c)}</span></th>`).join('')}</tr></thead><tbody>${mx}</tbody></table></div>
       <div class="gt-scroll" style="margin-top:12px"><table class="gt-t"><thead><tr><th class="gt-c">Region</th><th class="gt-c">Win rate</th><th class="gt-c">Average sets played</th><th class="gt-c">Sets played</th><th class="gt-c">Sets won</th><th class="gt-c">Teams</th></tr></thead><tbody>${tb.map(x=>`<tr><td class="gt-c"><span class="gt-tn"><i class="gt-rd" style="background:${REGC[x.r]}"></i><b>${esc(x.r)}</b></span></td><td class="gt-c gt-big" style="${gtHeat(x.n?x.w/x.n:.5)}">${pc(x.w,x.n)}</td><td class="gt-c">${x.ts.length?Math.round(x.n/x.ts.length):0}</td><td class="gt-c">${x.n}</td><td class="gt-c">${x.w}</td><td class="gt-c gt-tl">${x.ts.map(t=>logo(t,'l20')).join('')}</td></tr>`).join('')}</tbody></table></div>`,
-      'Top: win rate of the selected teams of each region against teams of each region (rivals in the Picks sheet with a region). Bottom: all the sets of the selected teams of that region; Average sets played = sets per team.')}
+      'Top: sets and win rate of the selected teams of each region against teams of each other region (rivals in the Picks sheet with a region); a region against itself is left dark. Bottom: all the sets of the selected teams of that region; Average sets played = sets per team.')}
   // 4) win rate per week: one block per week from the start date to the end date, each sorted by win rate
   const WC=['#17a1e9','#8cc152','#e040b8','#f0663e','#d9304f','#8f6cf0','#1fb5a3'];
   const wk=[];for(let a=rg.from;a<=rg.to;a=addDays(a,7))wk.push([a,addDays(a,6)<rg.to?addDays(a,6):rg.to]);
@@ -3483,9 +3489,9 @@ function groupTab(){
     for(let i=0;i<br.length;i++)for(let j=i+1;j<br.length;j++){const k=[br[i],br[j]].sort().join(' + '),e=du[k]||(du[k]={n:0,w:0});e.n++;e.w+=x.win}
     mp[x.m.m]=(mp[x.m.m]||0)+1}
   const ptab=(obj,lab)=>{const top=Object.entries(obj).sort((a,b)=>b[1].n-a[1].n||b[1].w-a[1].w).slice(0,20);
-    return `<table class="gt-t"><thead><tr><th class="gt-c">#</th><th class="gt-c">${lab}</th><th class="gt-c">Picks</th><th class="gt-c">Pick rate</th><th class="gt-c">Wins</th><th class="gt-c">Win rate</th></tr></thead><tbody>${top.map(([k,e],i)=>`<tr><td class="gt-c">${i+1}</td><td class="gt-c"><span class="gt-br">${k.split(' + ').length===2?duoH(k.split(' + ')):k.split(' + ').map(b=>`${bimg(b,'bi')}<span>${esc(b)}</span>`).join('<i>+</i>')}</span></td><td class="gt-c">${e.n}</td><td class="gt-c">${pc(e.n,NS)}</td><td class="gt-c">${e.w}</td><td class="gt-c gt-big" style="${gtHeat(e.w/e.n,e.n)}">${pc(e.w,e.n)}</td></tr>`).join('')}</tbody></table>`};
+    return `<table class="gt-t"><thead><tr><th class="gt-c">#</th><th class="gt-c">${lab}</th><th class="gt-c">Picks</th><th class="gt-c">Pick rate</th><th class="gt-c">Wins</th><th class="gt-c">Win rate</th></tr></thead><tbody>${top.map(([k,e],i)=>`<tr><td class="gt-c">${i+1}</td><td class="gt-c gt-l"><span class="gt-br">${k.split(' + ').length===2?duoH(k.split(' + ')):k.split(' + ').map(b=>`${bimg(b,'bi')}<span>${esc(b)}</span>`).join('<i>+</i>')}</span></td><td class="gt-c">${e.n}</td><td class="gt-c">${pc(e.n,NS)}</td><td class="gt-c">${e.w}</td><td class="gt-c gt-big" style="${gtHeat(e.w/e.n,e.n)}">${pc(e.w,e.n)}</td></tr>`).join('')}</tbody></table>`};
   const maps=[...MAP18].map(k=>{const nm=Object.keys(mp).find(m=>mkey(m)===k)||[...PICKMAPS].find(m=>mkey(m)===k)||k;return [nm,mp[nm]||0]}).sort((a,b)=>b[1]-a[1]);
-  const mapsH=`<table class="gt-t gt-maps"><thead><tr><th class="gt-c">#</th><th class="gt-c">Map</th><th class="gt-c">Sets</th></tr></thead><tbody>${maps.map(([m,n],i)=>{const c=MODE_COL[mkey(modeOfMap(m))]||'#6d6a85';return `<tr style="--mc:${c}"><td class="gt-c">${i+1}</td><td class="gt-c"><span class="gt-tn">${mimg(m,'gt-mi')}<b>${esc(m)}</b></span></td><td class="gt-c gt-big">${n}</td></tr>`}).join('')}</tbody></table>`;
+  const mapsH=`<table class="gt-t gt-maps"><thead><tr><th class="gt-c">#</th><th class="gt-c">Map</th><th class="gt-c">Sets</th></tr></thead><tbody>${maps.map(([m,n],i)=>{const c=MODE_COL[mkey(modeOfMap(m))]||'#6d6a85';return `<tr style="--mc:${c}"><td class="gt-c">${i+1}</td><td class="gt-c gt-l"><span class="gt-tn">${mimg(m,'gt-mi')}<b>${esc(m)}</b></span></td><td class="gt-c gt-big">${n}</td></tr>`}).join('')}</tbody></table>`;
   const pmH=sec('Picks and maps of the selected teams together',`<div class="gt-pm"><div><p class="msg gt-st">Top 20 picks · ${NS} team-sets</p><div class="gt-scroll">${ptab(pk,'Brawler')}</div></div><div><p class="msg gt-st">Top 20 duos (same team)</p><div class="gt-scroll">${ptab(du,'Duo')}</div></div><div><p class="msg gt-st">Maps · most played first</p><div class="gt-scroll">${mapsH}</div></div></div>`,
     'Picks: sets of the selected teams where the brawler (or the duo) was used, each team counted on its own. Pick rate = % of those sets. Maps: sets played on each of the 18 rotation maps, coloured by mode.');
   return `<div class="gt">${h2h}${matches}${regH}${weekH}${pmH}</div>`}
@@ -3648,7 +3654,7 @@ $('rcal').addEventListener('click',e=>{if(!FULL)return;
   else if(!to){if(d>=from)to=d;else{to=from;from=d}}
   else{if(d<from)from=d;else if(d>to)to=d;else if(dist(d,from)<=dist(d,to))from=d;else to=d}
   RC.from=from;RC.to=to;
-  if(from&&to){RC.pending=false;const bd=bounds(FULL);flt2.from=from;flt2.to=to>=bd.mx?null:to;refilter();uxCal(false)}
+  if(from&&to){RC.pending=false;const bd=bounds(FULL);flt2.from=from;flt2.to=to>=bd.mx?null:to;refilter()}
   else{RC.pending=true;rcRender()}});
 $('fType').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled)return;flt2.type=b.dataset.ty;refilter()});
 // small IndexedDB cache for the processed sheet (too big for localStorage)
@@ -4612,7 +4618,7 @@ document.addEventListener('click',e=>{const t=e.target;if(!t.closest)return;
 function scoutHTML(){
   scInit();
   const D=M.D,R=SC.rival,U=SC.us,T=allTeams();
-  const ctl=`<div class="sc-ctl" data-noexport="1"><div class="uxpicks">${tpChips('scrival','Rival to scout',R,t=>{SC.rival=t;if(allTeams().includes(t)){oneTeam=t;SC._one=t}renderDetail()},{excl:[U],cls:'B'})}${tpChips('scus','Our team',U,t=>{SC.us=t;renderDetail()},{excl:[R],cls:'A'})}</div></div>`+uxMapList(SC.map);
+  const ctl=`<div class="sc-ctl" data-noexport="1"><div class="uxpicks">${tpChips('scus','Our team',U,t=>{SC.us=t;renderDetail()},{excl:[R],cls:'A'})}${tpChips('scrival','Rival to scout',R,t=>{SC.rival=t;if(allTeams().includes(t)){oneTeam=t;SC._one=t}renderDetail()},{excl:[U],cls:'B'})}</div></div>`+uxMapList(SC.map);
   if(!R||!D.off.includes(R))return ctl+'<p class="msg" style="margin:14px 0">Choose a rival with data in the period selected above.</p>';
   const setsA=scSets(R),MAPN=SC.map?setsA.filter(x=>x.m===SC.map).length:0,mapOn=!!SC.map,useMap=mapOn&&MAPN>=5,mf=useMap?[SC.map]:null;
   const sets=useMap?setsA.filter(x=>x.m===SC.map):setsA,n=sets.length,w=sets.filter(x=>x.win===1).length,wr=n?w/n:0;
@@ -5570,6 +5576,18 @@ section.panel[aria-label="Data"] .topgrid{display:none!important}
 /* 6) data check */
 .uxmore{font:inherit;font-size:11.5px;font-weight:700;color:#a9a6bd;background:transparent;border:0;margin-left:10px;cursor:pointer;text-transform:none;letter-spacing:0}
 @media (max-width:1100px){.uxpicks{grid-template-columns:1fr}.uxcal{left:8px!important}}
+</style>
+
+<style>
+#uxCalX{position:absolute;top:6px;right:8px;width:26px;height:26px;border-radius:6px;border:1px solid #3a3850;background:#1f1e2c;color:#ecebf5;font-size:13px;cursor:pointer;z-index:2}#uxCalX:hover{background:#d63a50;border-color:#d63a50}
+.uxnotitle{display:none!important}
+.luhd{display:flex;align-items:stretch}.luhd .luth{flex:1;min-width:0}
+.luexp{flex:0 0 auto;font:inherit;font-size:11.5px;font-weight:700;color:#cfcde0;background:#1b1a26;border:0;border-left:1px solid #2c2a3a;padding:0 12px;cursor:pointer;white-space:nowrap}.luexp:hover{color:#fff;background:#262536}
+.lutc:not(.open) .luchips{display:none}
+.lub2.many .lucards{grid-template-columns:repeat(auto-fill,minmax(330px,1fr));align-items:start}
+td.hh-rg{vertical-align:middle;font-size:12px;font-weight:700;height:38px}td.hh-rg i.gt-rd{margin-right:7px;vertical-align:middle}.hh-rg span{min-width:0!important;font-size:12px!important}
+.hh-t{width:auto!important;min-width:0!important}.hh-rgh{width:96px}.hh-rgh i.gt-rd{display:block!important;width:10px!important;height:10px!important;margin:0 auto 4px;border-radius:3px}.hh-rg{min-width:150px}.hh-rgh span{font-size:9.5px!important}
+td.gt-l{text-align:left!important}td.gt-l .gt-br,td.gt-l .gt-tn{justify-content:flex-start!important}
 </style>
 
 <style>
