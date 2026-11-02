@@ -1668,6 +1668,29 @@ let DB=DB_DEFAULT;
 let IMGS={};try{IMGS=JSON.parse($('imgs').textContent)}catch(e){}
 const clk=s=>String(Math.floor(s/3600)%24).padStart(2,'0')+':'+String(Math.floor(s%3600/60)).padStart(2,'0');
 const mkey=s=>String(s).toLowerCase().replace(/[^a-z0-9]/g,'');
+// ===== own images: logos/ brawlers/ maps/ folders of this GitHub repository =====
+(function(){
+  const host=location.hostname,own=/\.github\.io$/i.test(host)?host.split('.')[0]:'',repo=(location.pathname.split('/')[1]||'');
+  if(!own||!repo)return;
+  const KEY='tvt:ownimg2:'+repo,EXT=/\.(png|jpe?g|webp|gif|svg)$/i;
+  const apply=L=>{if(!L)return;let n=0;
+    const nm=f=>mkey(f.split('/').pop().replace(EXT,'')),url=f=>f.split('/').map(encodeURIComponent).join('/');
+    for(const f of L.logos||[]){IMGS[nm(f)]=url(f);n++}
+    for(const f of L.brawlers||[]){IMGS['br'+nm(f)]=url(f);n++}
+    for(const f of L.maps||[]){const k=nm(f);IMGS[k]=url(f);IMGS['bg'+k]=url(f);n++}
+    return n};
+  let cached=null;try{cached=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
+  if(cached)apply(cached.L);
+  if(cached&&Date.now()-cached.t<20*60*1000)return;
+  // one call lists every file of the repository; folders: logos / LOGOS EQUIPOS, brawlers / BRAWLERS, maps / MAPAS BRAWL
+  const KIND={logos:'logos',logosequipos:'logos',brawlers:'brawlers',maps:'maps',mapas:'maps',mapasbrawl:'maps'};
+  fetch(`https://api.github.com/repos/${own}/${repo}/git/trees/HEAD?recursive=1`,{cache:'no-store'}).then(r=>r.ok?r.json():null).then(T=>{if(!T||!Array.isArray(T.tree))return;
+    const L={logos:[],brawlers:[],maps:[]};
+    for(const x of T.tree){if(x.type!=='blob'||!EXT.test(x.path))continue;const parts=x.path.split('/');if(parts.length!==2)continue;const k=KIND[mkey(parts[0])];if(k)L[k].push(x.path)}const changed=JSON.stringify(L)!==JSON.stringify(cached&&cached.L);
+    try{localStorage.setItem(KEY,JSON.stringify({t:Date.now(),L}))}catch(e){}
+    if(!changed)return;apply(L);
+    try{for(const k in LHUE)delete LHUE[k]}catch(e){}
+    setTimeout(()=>{try{if(typeof render==='function')render()}catch(e){}try{if(typeof renderDetail==='function')renderDetail()}catch(e){}try{if(typeof applyView==='function')applyView()}catch(e){}},50)})})();
 const MODE_COL={gemgrab:'#9a3df3',knockout:'#f7831c',hotzone:'#e33b50',heist:'#d65cd3',bounty:'#00cfff',brawlball:'#8ca0e0'};
 const mcs=m=>MODE_COL[mkey(m)]?` style="border-color:${MODE_COL[mkey(m)]};border-width:2px"`:'';
 const logo=(t,cls)=>IMGS[mkey(t)]?`<img class="${cls}" src="${IMGS[mkey(t)]}" alt="">`:IMGS.predeterminedlogo?`<img class="${cls}" src="${IMGS.predeterminedlogo}" alt="">`:`<span class="ph ${cls}">${esc(String(t).replace(/[^A-Za-z0-9]/g,'').slice(0,2).toUpperCase())}</span>`;
