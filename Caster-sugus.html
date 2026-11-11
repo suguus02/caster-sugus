@@ -3309,8 +3309,11 @@ function casterTab(P){
   if(p==null){const sh=(w,n)=>(w+3)/(n+6),all=t=>{const L=rows.filter(x=>x.t===t);return sh(L.reduce((a,x)=>a+x.win,0),L.length)},hh=(t,o)=>{const L=rows.filter(x=>x.t===t&&x.o===o);return sh(L.reduce((a,x)=>a+x.win,0),L.length)};
     const sA=.4*sh(hA.w,hA.n)+.35*all(A)+.25*hh(A,B),sB=.4*sh(hB.w,hB.n)+.35*all(B)+.25*hh(B,A);p=1/(1+Math.exp(-6*(sA-sB)));src='the win rate of each team on this map, its form on every map and their head to head (sets)'}
   const pa=Math.round(100*p);
-  const mid=`<div class="cas-mid" style="--m:${MC}">${many?`<div class="cas-mthumbs">${MAPS.map((m,k)=>{const u=IMGS['bg'+mkey(m)]||IMGS[mkey(m)]||'';return u?`<span><img src="${u}" alt="" title="${esc(m)}"><b>${k+1}</b></span>`:''}).join('')}</div>`:mimg?`<img class="cas-mimg" src="${mimg}" alt="">`:''}<div class="cas-mwp"><div class="cas-mt"><span>${IMGS['mode'+mkey(MD)]?`<img class="cas-mi" src="${IMGS['mode'+mkey(MD)]}" alt="">`:''}${many?'':esc(MD)}</span><b>${many?'Series of '+MAPS.length+' maps':esc(MAP)}</b></div>
+  // caster page: the map is not a thumbnail in the top row but a big card in the row below (between the total picks and the duos)
+  const feat=!P;
+  const mid=`<div class="cas-mid" style="--m:${MC}">${feat?'':many?`<div class="cas-mthumbs">${MAPS.map((m,k)=>{const u=IMGS['bg'+mkey(m)]||IMGS[mkey(m)]||'';return u?`<span><img src="${u}" alt="" title="${esc(m)}"><b>${k+1}</b></span>`:''}).join('')}</div>`:mimg?`<img class="cas-mimg" src="${mimg}" alt="">`:''}<div class="cas-mwp"><div class="cas-mt"><span>${IMGS['mode'+mkey(MD)]?`<img class="cas-mi" src="${IMGS['mode'+mkey(MD)]}" alt="">`:''}${many?'':esc(MD)}</span><b>${many?'Series of '+MAPS.length+' maps':esc(MAP)}</b></div>
     <div class="cas-wpt" title="Win chance from ${src}">${many?'Series win chance':'Win chance'}</div><div class="cas-wpr"><b style="color:${tcA}">${pa}%</b><div class="cas-wpb"><i style="flex:${pa};background:${tcA}"></i><i style="flex:${100-pa};background:${tcB}"></i></div><b style="color:${tcB}">${100-pa}%</b></div></div></div>`;
+  const mapF=`<div class="cas-mapf" style="--m:${MC}"><div class="cas-mapf-in"><div class="cas-mapf-md">${IMGS['mode'+mkey(MD)]?`<img src="${IMGS['mode'+mkey(MD)]}" alt="">`:''}<span>${esc(MD)}</span></div><div class="cas-mapf-img">${mimg?`<img src="${mimg}" alt="${esc(MAP)}">`:`<span class="cas-mapf-ph">${esc(MAP)}</span>`}</div><b class="cas-mapf-nm">${esc(MAP)}</b></div></div>`;
   // tables
   const head=(t,tog,col,tip)=>`<div class="cas-ch"${col?` style="--c:${col}"`:''}><div class="cas-ln" title="${esc(tip||'')}"><span>${t}</span></div>${tog||''}</div>`;
   const pkT=(id,t,L,col)=>{const arr=casSort(casPk(L,BAN),id,'pr').slice(0,10);const N=L.length;
@@ -3332,7 +3335,7 @@ function casterTab(P){
     const rs=arr.map(x=>`<tr${x.t===A||x.t===B?rowAttr(x.t):''}><td>${who(x)}</td><td class="num">${x.n}</td><td class="num cas-w" style="${casWr(x.w/x.n,x.n)}">${casPc(x.w,x.n)}</td><td class="num mut">${x.w}–${x.n-x.w}</td></tr>`).join('');
     return `<div class="cas-sub" style="--c:${col}">${head(`${logo(t,'l20')} Most played rivals`,casTog(id,[['n','Sets'],['wr','Win rate']],'n'),col,'the 5 rivals '+t+' played the most sets against (every map); rivals that are not in the list are shown by their 3 players')}<table class="cas-t"><tbody>${rs||'<tr><td colspan="4" class="msg">No sets.</td></tr>'}</tbody></table></div>`};
   return `<div class="cas" title="">${top}${maps_}<div class="cas-head">${chips(A,'casa')}${hdr(A,hA,tcA)}${mid}${hdr(B,hB,tcB,1)}${chips(B,'casb')}</div>${P&&P.extra?P.extra:''}
-    <div class="cas-g4">${pkT('pkA',`${logo(A,'l20')} ${esc(A)}`,RA,tcA)}${pkT('pkG',(many?'Selected maps':'Selected map')+' · total picks',RG,'var(--accent,#d63a50)')}${duoT()}${pkT('pkB',`${logo(B,'l20')} ${esc(B)}`,RB,tcB)}</div>
+    <div class="cas-g4${feat?' cas-g4m':''}">${pkT('pkA',`${logo(A,'l20')} ${esc(A)}`,RA,tcA)}${pkT('pkG',(many?'Selected maps':'Selected map')+' · total picks',RG,'var(--accent,#d63a50)')}${feat?mapF:''}${duoT()}${pkT('pkB',`${logo(B,'l20')} ${esc(B)}`,RB,tcB)}</div>
     <div class="cas-g5"><div class="cas-card cas-rv">${rivT(A,tcA)}</div>${teamT('wMap',many?'Win rate · these maps':'Win rate · '+esc(MAP),onMap,'sets on '+(many?MAPS.join(', '):MAP))}${teamT('wMode',MDS.size>1?'Win rate · their modes':'Win rate · '+esc(MD),x=>MDS.has(x.md),'sets on every map of '+[...MDS].join(', '))}${teamT('wAll','Win rate · all maps',()=>true,'sets on every map and mode')}<div class="cas-card cas-rv">${rivT(B,tcB)}</div></div>
     <p class="cas-foot">Sets from ${fmtDate(R.from)} to ${fmtDate(R.to)} (single games and draws left out) · pick rate = share of the sets with that brawler · Team A in blue, Team B in red${BAN.size?' · global bans left out of the brawler and duo tables: '+esc([...BAN].join(', ')):''}</p></div>`}
 // the caster page fits the whole tab in the window (smaller screens: everything a bit smaller)
@@ -5487,6 +5490,15 @@ h3.sec-h:before,h3.sec-h:after,.gt-sec>.lbl:before,.gt-sec>.lbl:after,.tc-sec.sc
 .cas-t tr.cas-rg td{background:color-mix(in srgb,var(--rg) 4%,transparent)}.cas-t tr.cas-rg td:first-child{box-shadow:inset 2px 0 0 color-mix(in srgb,var(--rg) 40%,transparent)}
 .cas-t tr.cas-hl td{background:color-mix(in srgb,var(--rc) 26%,transparent)}.cas-t tr.cas-hl td:first-child{box-shadow:inset 3px 0 0 var(--rc)}
 .cas-foot{margin:0;color:var(--muted,#a9a6bd);font-size:10.5px;text-align:center}
+/* caster page: the map as a big card in the middle of the brawler tables */
+.cas-g4.cas-g4m{grid-template-columns:repeat(2,minmax(0,1fr)) 215px repeat(2,minmax(0,1fr))}
+.cas-mapf{align-self:stretch;position:relative;min-height:300px;border-radius:12px;border:2px solid var(--m);overflow:hidden;background:radial-gradient(120% 80% at 50% 45%,color-mix(in srgb,var(--m) 34%,#16151f),#16151f 75%);box-shadow:0 0 22px color-mix(in srgb,var(--m) 30%,transparent)}
+.cas-mapf-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 8px 7px}
+.cas-mapf-md{display:flex;align-items:center;gap:5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:11px;color:var(--m)}.cas-mapf-md img{width:18px;height:18px}
+.cas-mapf-img{flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}
+.cas-mapf-img img{max-width:100%;max-height:100%;object-fit:contain;border-radius:7px;box-shadow:0 4px 14px rgba(0,0,0,.55)}
+.cas-mapf-ph{font-weight:800;font-size:16px;text-align:center;opacity:.8}
+.cas-mapf-nm{font-size:17px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;text-align:center;line-height:1.1;text-shadow:0 2px 6px rgba(0,0,0,.6)}
 </style>
 
 <style>
