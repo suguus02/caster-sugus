@@ -31,8 +31,8 @@ window.CASTER_ONLY=true;window.API_SHEET_ID="19F29O9Sxjm17Tt6i815t_Wk6M4SkHTsgRw
   try{var H=window.__UXH;if(H){if(H.f!=null)localStorage.setItem('tvt:from',H.f);if(H.to!=null)localStorage.setItem('tvt:to',H.to);if(H.ty)localStorage.setItem('tvt:type',H.ty)}}catch(e){}
   document.addEventListener('DOMContentLoaded',function(){pinta();setInterval(pinta,120000)});
 })();
-</script><meta charset="utf-8"><meta name="viewport" content="width=980"><title>ANALYSIS SUGUS · CASTER</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='1'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%23ff5a6e'/%3E%3Cstop%20offset='1'%20stop-color='%237b3fe4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle%20cx='32'%20cy='32'%20r='31'%20fill='url%28%23g%29'/%3E%3Ctext%20x='32'%20y='43'%20font-family='Arial%20Black%2CArial%2Csans-serif'%20font-weight='900'%20font-size='28'%20text-anchor='middle'%20fill='%23fff'%3EAS%3C/text%3E%3C/svg%3E">
+</script><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes"><title>CASTER DESK · SUGUS</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2314111d'/%3E%3Cpath d='M4 4h14v4H8v10H4zM60 4v14h-4V8H46V4zM4 60V46h4v10h10v4zM60 60H46v-4h10V46h4z' fill='%23c084fc'/%3E%3Crect x='26' y='15' width='12' height='22' rx='6' fill='%23c084fc'/%3E%3Cpath d='M19 31a13 13 0 0 0 26 0' fill='none' stroke='%23fff' stroke-width='4'/%3E%3Crect x='30' y='44' width='4' height='6' fill='%23fff'/%3E%3Crect x='23' y='49' width='18' height='4' fill='%23fff'/%3E%3C/svg%3E">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -1082,7 +1082,7 @@ table.rank td.ic,.pgrid .rank td.ic{text-align:left}table.rank th:nth-child(2),.
 <div class="wrap">
   <header class="hero">
     <div class="herotext">
-      <h1>ANALYSIS SUGUS · CASTER</h1><span class="msg heroinfo" id="sheetInfo"></span>
+      <h1>CASTER DESK · SUGUS</h1><span class="msg heroinfo" id="sheetInfo"></span>
     </div>
   </header>
 
@@ -1288,7 +1288,7 @@ function processRows(rows,db,opts){
     let fl=0;if(B.pl.join('|')<A.pl.join('|')){fl=1;for(const f of ['pl','nm','br']){const x=A[f];A[f]=B[f];B[f]=x}}
     const [dd,mm,yy]=ds0.split('-');const d=yy+'-'+mm.padStart(2,'0')+'-'+dd.padStart(2,'0');
     let y=rr==='VICTORY'?1:rr==='DEFEAT'?0:0.5;if(fl&&y!==0.5)y=1-y;
-    const m={d,ty:(opts.typeCol!=null?t(r[opts.typeCol]).toLowerCase():''),m:t(r[2]),a:sideTeam(A.pl,A.nm,tag2team,dbt,official,alias,rk),xa:LAST_AMB,b:sideTeam(B.pl,B.nm,tag2team,dbt,official,alias,rk),xb:LAST_AMB,y,ba:A.br,bb:B.br,ta:A.pl,tb:B.pl,i:idx,t:tm?((s=>s<18000?s+86400:s)(secs(tm))):idx,ht:tm?1:0};
+    const m={d,ty:(opts.typeCol!=null?t(r[opts.typeCol]).toLowerCase():''),m:t(r[2]),a:sideTeam(A.pl,A.nm,tag2team,dbt,official,alias,rk),xa:LAST_AMB,b:sideTeam(B.pl,B.nm,tag2team,dbt,official,alias,rk),xb:LAST_AMB,y,ba:A.br,bb:B.br,ta:A.pl,tb:B.pl,...(t(r[32])?{gs:[t(r[32])]}:{}),i:idx,t:tm?((s=>s<18000?s+86400:s)(secs(tm))):idx,ht:tm?1:0};
     const key=d+'~'+m.m+'~'+A.pl.join('|')+'#'+A.br.join('|')+'~'+B.pl.join('|')+'#'+B.br.join('|'),o=fl;
     let g=groups.get(key);if(!g){g=[[],[]];groups.set(key,g)}g[o].push(m);
   }
@@ -1310,7 +1310,7 @@ function processRows(rows,db,opts){
       if(!newFmt){matches.push(Object.assign({},m,{w:m.y===1?1:0,l:m.y===0?1:0,dr:m.y===0.5?1:0,sc:''}));continue}
       if(!cur||cur.n>=9||cur.w>=2||cur.l>=2||(m.ht&&cur.ht&&m.t-cur.last>900)){ // a set ends when one side has 2 wins (Bo3), after 15 min without a game or after 9 games (draws are replayed): a rematch with the same comps is a new set
       cur=Object.assign({},m,{w:0,l:0,dr:0,n:0,last:m.t});matches.push(cur)}
-      cur.n++;cur.last=m.t;if(m.y===1)cur.w++;else if(m.y===0)cur.l++;else cur.dr++;
+      cur.n++;cur.last=m.t;if(cur.n>1&&m.gs)cur.gs=(cur.gs||[]).concat(m.gs);if(m.y===1)cur.w++;else if(m.y===0)cur.l++;else cur.dr++;
     }
   }
   for(const m of matches){
@@ -1318,7 +1318,7 @@ function processRows(rows,db,opts){
   }
   matches.sort((x,y)=>x.d<y.d?-1:x.d>y.d?1:x.t-y.t||x.i-y.i);
   matches.forEach((m,k)=>{m.i=k});
-  return {v:4,ev:2,official,matches,names,raw,dups,rounds,fmt:newFmt?'rounds':'sets',knownTags:opts.known||{},known:knownNames(db,opts.known),rank:rk};
+  return {v:4,ev:3,official,matches,names,raw,dups,rounds,fmt:newFmt?'rounds':'sets',knownTags:opts.known||{},known:knownNames(db,opts.known),rank:rk};
 }
 // vuelve a etiquetar los equipos de un conjunto ya procesado (por ejemplo al cargar otra tabla de equipos)
 function relabel(ds,db){
@@ -3247,7 +3247,7 @@ const CAS=(()=>{const d={a:'',b:'',map:'',from:'',to:'',cmp:'tour',cvT:'',cvR:''
 const casSave=()=>store.set('tvt:caster',JSON.stringify(CAS));
 const casU=t=>grpClean(t).toUpperCase();
 // 50% in yellow, red below, green above (few sets = paler)
-function casWr(p,n){const d=p-.5,c=n==null?1:Math.min(1,.4+n/15);if(Math.abs(d)<.05)return 'background:hsla(40,92%,52%,.42);color:#fff;font-weight:800';return wrSoft(p,n)}
+function casWr(p,n){const v=p*100,c=v>=60?'#4ade80':v>=53?'#86efac':v>47?'#facc15':v>40?'#fca5a5':'#f87171';return `color:${c};font-weight:800`}
 // the teams: the list SELECTED TEAMS of the Picks sheet, in its order
 const casOrig={};
 function casTeams(){const S=(SELECTED&&SELECTED.length)?SELECTED:Object.keys(TOUR),o=[];for(const x of S){const u=String(x).trim().toUpperCase();if(!u||o.includes(u))continue;casOrig[u]=x;o.push(u)}return o}
@@ -3256,9 +3256,27 @@ function casLast(){let l='';for(const m of ((FULL||ds).matches||[]))if(m.d&&m.d>
 function casRange(){const last=casLast(),to=CAS.to||last,from=CAS.from||balFromDays(balDays(to)-30);return {from,to,last}}
 // one row per team and set (draws left out): team, rival, win, map, mode, brawlers
 let _casK='',_casV=null;
+// K/D and damage (column "Stats (no tocar)"): kills, deaths and damage of each player in each game of the set
+const fmtK=x=>x>=1000?(x/1000).toFixed(x>=10000?0:1)+'k':String(Math.round(x));
+const _casSt=new WeakMap();
+function casStats(m){if(!m.gs)return null;let v=_casSt.get(m);if(v!==undefined)return v;v=null;
+  const G=m.gs.map(x=>{try{return JSON.parse(x)}catch(e){return null}}).filter(q=>q&&q.p);
+  if(G.length){const P={};for(const q of G)for(const g in q.p){const a=q.p[g],e=P[g.toUpperCase()]||(P[g.toUpperCase()]={n:0,k:0,d:0,dm:0});e.n++;e.k+=+a[0]||0;e.d+=+a[1]||0;e.dm+=+a[2]||0}v={P,games:G.length}}
+  _casSt.set(m,v);return v}
+const kdAdd=(o,k,L)=>{const e=o[k]||(o[k]={g:0,k:0,d:0,dm:0});e.g+=L[0].n;for(const q of L){e.k+=q.k;e.d+=q.d;e.dm+=q.dm}};
+// one brawler: its kills, deaths and damage per game · a duo: the TOTAL of its 2 brawlers per game
+function casKD(L){const B={},DU={};for(const x of L){const Q=x.kd;if(!Q||!Q.length)continue;for(const [b,q] of Q)kdAdd(B,b,[q]);
+  for(let a=0;a<Q.length;a++)for(let c=a+1;c<Q.length;c++)kdAdd(DU,[Q[a][0],Q[c][0]].sort().join(' + '),[Q[a][1],Q[c][1]])}return {B,DU}}
+// a team: the total of its 3 players per game
+const casTK=L=>{const e={g:0,k:0,d:0,dm:0};for(const x of L)if(x.tk){e.g+=x.tk.g;e.k+=x.tk.k;e.d+=x.tk.d;e.dm+=x.tk.dm}return e};
+const casKdl=e=>`<small class="cas-kd">${e&&e.g?`${e.d?(e.k/e.d).toFixed(2):e.k+'/0'} K/D · ${fmtK(e.dm/e.g)} dmg`:'no game stats'}</small>`;
 function casRows(){const F=FULL||ds,R=casRange(),k=(F.matches||[]).length+'|'+R.from+'|'+R.to+'|'+(F.matches&&F.matches[0]&&F.matches[0].t);if(_casK===k&&_casV)return _casV;
   const L=[];for(const m of F.matches||[]){if(m.s||m.y===0.5||!m.d||m.d<R.from||m.d>R.to)continue;const md=modeOfMap(m.m),A_=casU(m.a),B_=m.sh?'':casU(m.b);
-    for(const [t,o,win,br,ot,mt] of [[A_,B_,m.y,m.ba,m.tb,m.ta],[B_,A_,1-m.y,m.bb,m.ta,m.tb]]){if(!t)continue;L.push({t,o,win,ot:(ot||[]).filter(Boolean),mt:(mt||[]).filter(Boolean),map:m.m,mk:mkey(m.m),md,br:[...new Set((br||[]).filter(Boolean).map(x=>String(x).toUpperCase()))]})}}
+    const S=casStats(m);
+    for(const [t,o,win,br,ot,mt] of [[A_,B_,m.y,m.ba,m.tb,m.ta],[B_,A_,1-m.y,m.bb,m.ta,m.tb]]){if(!t)continue;
+      let kd=null,tk=null;if(S){kd=(br||[]).map((b,k)=>{const q=b&&S.P[String((mt||[])[k]||'').toUpperCase()];return q?[String(b).toUpperCase(),q]:null}).filter(Boolean);
+        if(kd.length){tk={g:S.games,k:0,d:0,dm:0};for(const [,q] of kd){tk.k+=q.k;tk.d+=q.d;tk.dm+=q.dm}}else kd=null}
+      L.push({t,o,win,ot:(ot||[]).filter(Boolean),mt:(mt||[]).filter(Boolean),map:m.m,mk:mkey(m.m),md,br:[...new Set((br||[]).filter(Boolean).map(x=>String(x).toUpperCase()))],kd,tk})}}
   _casK=k;_casV=L;return L}
 // the teams of the chosen tournament / region / the chosen ones: Team A, Team B and every table of several teams use exactly these
 function casGroup(teams,free){
@@ -3315,31 +3333,35 @@ function casterTab(P){
     <div class="cas-wpt" title="Win chance from ${src}">${many?'Series win chance':'Win chance'}</div><div class="cas-wpr"><b style="color:${tcA}">${pa}%</b><div class="cas-wpb"><i style="flex:${pa};background:${tcA}"></i><i style="flex:${100-pa};background:${tcB}"></i></div><b style="color:${tcB}">${100-pa}%</b></div></div></div>`;
   // tables
   const head=(t,tog,col,tip)=>`<div class="cas-ch"${col?` style="--c:${col}"`:''}><div class="cas-ln" title="${esc(tip||'')}"><span>${t}</span></div>${tog||''}</div>`;
-  const pkT=(id,t,L,col)=>{const arr=casSort(casPk(L,BAN),id,'pr').slice(0,10);const N=L.length;
-    const rs=arr.map((x,i)=>`<tr><td class="rk">${i+1}</td><td><div class="cas-br">${bimg(x.k,'bi')}<span>${esc(x.k)}</span></div></td><td class="num">${x.n}</td><td class="num mut">${casPc(x.n,N)}</td><td class="num cas-w" style="${casWr(x.w/x.n,x.n)}">${casPc(x.w,x.n)}</td></tr>`).join('');
+  const pkT=(id,t,L,col)=>{const arr=casSort(casPk(L,BAN),id,'pr').slice(0,10);const N=L.length,KD=casKD(L);
+    const rs=arr.map((x,i)=>`<tr><td class="rk">${i+1}</td><td><div class="cas-br">${bimg(x.k,'bi')}<div class="cas-nm"><span>${esc(x.k)}</span>${casKdl(KD.B[x.k])}</div></div></td><td class="num">${x.n}</td><td class="num mut">${casPc(x.n,N)}</td><td class="num cas-w" style="${casWr(x.w/x.n,x.n)}">${casPc(x.w,x.n)}</td></tr>`).join('');
     return `<div class="cas-card" style="--c:${col}">${head(t,casTog(id,[['pr','Pick rate'],['wr','Win rate']],'pr'),col,`${N} sets on ${mapsLbl}`)}<table class="cas-t"><thead><tr><th class="rk"></th><th>Brawler · ${N} sets</th><th class="num cw">Sets</th><th class="num cw2">Pick</th><th class="num cw2">Win</th></tr></thead><tbody>${rs||'<tr><td colspan="5" class="msg">No sets on this map in these dates.</td></tr>'}</tbody></table></div>`};
-  const duoT=()=>{const arr=casSort(casDuo(RG,BAN),'duo','pr').slice(0,10);const N=RG.length;
-    const rs=arr.map((x,i)=>`<tr><td class="rk">${i+1}</td><td>${duoH(x.k.split(' + '))}</td><td class="num">${x.n}</td><td class="num mut">${casPc(x.n,N)}</td><td class="num cas-w" style="${casWr(x.w/x.n,x.n)}">${casPc(x.w,x.n)}</td></tr>`).join('');
+  const duoT=()=>{const arr=casSort(casDuo(RG,BAN),'duo','pr').slice(0,10);const N=RG.length,KD=casKD(RG);
+    const rs=arr.map((x,i)=>`<tr><td class="rk">${i+1}</td><td><div class="cas-duo">${duoH(x.k.split(' + '))}${casKdl(KD.DU[x.k])}</div></td><td class="num">${x.n}</td><td class="num mut">${casPc(x.n,N)}</td><td class="num cas-w" style="${casWr(x.w/x.n,x.n)}">${casPc(x.w,x.n)}</td></tr>`).join('');
     return `<div class="cas-card">${head('Duos',casTog('duo',[['pr','Pick rate'],['wr','Win rate']],'pr'),null,`${cmpLbl} · ${N} sets on ${mapsLbl}`)}<table class="cas-t"><thead><tr><th class="rk"></th><th>Duo · ${esc(cmpLbl)}</th><th class="num cw">Sets</th><th class="num cw2">Pick</th><th class="num cw2">Win</th></tr></thead><tbody>${rs||'<tr><td colspan="5" class="msg">No sets.</td></tr>'}</tbody></table></div>`};
   const rowAttr=t=>t===A?` class="cas-hl" style="--rc:${tcA}"`:t===B?` class="cas-hl" style="--rc:${tcB}"`:'';
-  const teamT=(id,t,flt,tip)=>{const arr=G.map(tm=>{const L=rows.filter(x=>x.t===tm&&flt(x));return {t:tm,n:L.length,w:L.reduce((a,x)=>a+x.win,0)}}).filter(x=>x.n);
-    const rs=casSort(arr,id,'wr').map((x,i)=>`<tr${rowAttr(x.t)}><td class="rk">${i+1}</td><td><div class="cas-tm">${logo(x.t,'l20')}<span>${esc(x.t)}</span></div></td><td class="num">${x.n}</td><td class="num cas-w" style="${casWr(x.w/x.n,x.n)}">${casPc(x.w,x.n)}</td><td class="num mut">${x.w}–${x.n-x.w}</td></tr>`).join('');
+  const teamT=(id,t,flt,tip)=>{const arr=G.map(tm=>{const L=rows.filter(x=>x.t===tm&&flt(x));return {t:tm,n:L.length,w:L.reduce((a,x)=>a+x.win,0),kd:casTK(L)}}).filter(x=>x.n);
+    const rs=casSort(arr,id,'wr').map((x,i)=>`<tr${rowAttr(x.t)}><td class="rk">${i+1}</td><td><div class="cas-tm">${logo(x.t,'l20')}<div class="cas-nm"><span>${esc(x.t)}</span>${casKdl(x.kd)}</div></div></td><td class="num">${x.n}</td><td class="num cas-w" style="${casWr(x.w/x.n,x.n)}">${casPc(x.w,x.n)}</td><td class="num mut">${x.w}–${x.n-x.w}</td></tr>`).join('');
     return `<div class="cas-card">${head(t,casTog(id,[['wr','Win rate'],['n','Sets']],'wr'),null,tip)}<table class="cas-t"><thead><tr><th class="rk"></th><th>Team</th><th class="num cw">Sets</th><th class="num cw2">Win</th><th class="num cw3">W–L</th></tr></thead><tbody>${rs||'<tr><td colspan="5" class="msg">No sets.</td></tr>'}</tbody></table></div>`};
   // the 5 most played rivals: a team of the list by its name and logo, any other rival by its 3 players (one under the other)
+const CAS_USR='<svg class="cas-usr" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#6e6a85" stroke-width="1.8" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.2c2.6.2 4.4 1.8 5 4.8"/></svg>';
   const nmOf=g=>sheetName(g,((FULL&&FULL.names)||ds.names||{})[g])||g;
   const rivT=(t,col)=>{const id='riv'+(t===A?'A':'B'),c={};for(const x of rows){if(x.t!==t)continue;const isT=x.o&&teams.includes(x.o),k=isT?x.o:'#'+x.ot.slice().sort().join(',');if(k==='#')continue;
       const e=c[k]||(c[k]={k,t:isT?x.o:'',tags:x.ot.slice(),n:0,w:0});e.n++;e.w+=x.win}
     const arr=casSort(Object.values(c),id,'n').slice(0,5);
-    const who=x=>x.t?`<div class="cas-tm">${logo(x.t,'l20')}<span>${esc(x.t)}</span></div>`:`<div class="cas-pl">${x.tags.map(g=>`<span>${esc(nmOf(g))}</span>`).join('')}</div>`;
+    const who=x=>{if(x.t)return `<div class="cas-tm">${logo(x.t,'l20')}<span>${esc(x.t)}</span></div>`;const nn=x.tags.map(g=>nmOf(g));return `<div class="cas-tm cas-mix" title="${esc(nn.join(' · '))}">${CAS_USR}<div class="cas-nm"><span>Mixed roster</span><small class="cas-kd">${esc(nn.join(' · '))}</small></div></div>`};
     const rs=arr.map(x=>`<tr${x.t===A||x.t===B?rowAttr(x.t):''}><td>${who(x)}</td><td class="num">${x.n}</td><td class="num cas-w" style="${casWr(x.w/x.n,x.n)}">${casPc(x.w,x.n)}</td><td class="num mut">${x.w}–${x.n-x.w}</td></tr>`).join('');
-    return `<div class="cas-sub" style="--c:${col}">${head(`${logo(t,'l20')} Most played rivals`,casTog(id,[['n','Sets'],['wr','Win rate']],'n'),col,'the 5 rivals '+t+' played the most sets against (every map); rivals that are not in the list are shown by their 3 players')}<table class="cas-t"><tbody>${rs||'<tr><td colspan="4" class="msg">No sets.</td></tr>'}</tbody></table></div>`};
-  return `<div class="cas" title="">${top}${maps_}<div class="cas-head">${chips(A,'casa')}${hdr(A,hA,tcA)}${mid}${hdr(B,hB,tcB,1)}${chips(B,'casb')}</div>${P&&P.extra?P.extra:''}
-    <div class="cas-g4">${pkT('pkA',`${logo(A,'l20')} ${esc(A)}`,RA,tcA)}${pkT('pkG',(many?'Selected maps':'Selected map')+' · total picks',RG,'var(--accent,#d63a50)')}${duoT()}${pkT('pkB',`${logo(B,'l20')} ${esc(B)}`,RB,tcB)}</div>
+    const o_=t===A?B:A,Hh=o_?rows.filter(x=>x.t===t&&x.o===o_):[],Hm=Hh.filter(onMap),hc=(L,lb)=>{const w=L.reduce((a,x)=>a+x.win,0);return `<div class="h2c"><small>${lb}</small><b>${L.length?w+'–'+(L.length-w):'–'}</b><em${L.length?` style="${casWr(w/L.length,L.length)}"`:''}>${L.length?casPc(w,L.length):'no sets'}</em></div>`};
+    const h2h=o_?`<div class="cas-h2h" title="Sets between ${esc(t)} and ${esc(o_)} in these dates"><div class="h2t">Head to head <span>vs ${logo(o_,'l20')} ${esc(o_)}</span></div><div class="h2r">${hc(Hm,many?'These maps':'This map')}${hc(Hh,'All maps')}</div></div>`:'';
+    return `<div class="cas-sub" style="--c:${col}">${head(`${logo(t,'l20')} Rivals`,casTog(id,[['n','Sets'],['wr','Win rate']],'n'),col,'the 5 rivals '+t+' played the most sets against (every map); rivals that are not in the list are shown by their 3 players')}${h2h}<table class="cas-t"><tbody>${rs||'<tr><td colspan="4" class="msg">No sets.</td></tr>'}</tbody></table></div>`};
+  return `<div class="cas" title="">${top}${maps_}<div class="cas-head cas-head2">${chips(A,'casa')}${chips(B,'casb')}</div>${P&&P.extra?P.extra:''}
+    <div class="cas-g4 cas-g7"><div class="cas-grp" style="--c:${tcA}">${pkT('pkA',`${logo(A,'l20')} ${esc(A)}`,RA,tcA)}${hdr(A,hA,tcA)}</div>${pkT('pkG',(many?'Selected maps':'Selected map')+' · total picks',RG,'var(--accent,#d63a50)')}${mid}${duoT()}<div class="cas-grp cas-grpb" style="--c:${tcB}">${hdr(B,hB,tcB,1)}${pkT('pkB',`${logo(B,'l20')} ${esc(B)}`,RB,tcB)}</div></div>
     <div class="cas-g5"><div class="cas-card cas-rv">${rivT(A,tcA)}</div>${teamT('wMap',many?'Win rate · these maps':'Win rate · '+esc(MAP),onMap,'sets on '+(many?MAPS.join(', '):MAP))}${teamT('wMode',MDS.size>1?'Win rate · their modes':'Win rate · '+esc(MD),x=>MDS.has(x.md),'sets on every map of '+[...MDS].join(', '))}${teamT('wAll','Win rate · all maps',()=>true,'sets on every map and mode')}<div class="cas-card cas-rv">${rivT(B,tcB)}</div></div>
     <p class="cas-foot">Sets from ${fmtDate(R.from)} to ${fmtDate(R.to)} (single games and draws left out) · pick rate = share of the sets with that brawler · Team A in blue, Team B in red${BAN.size?' · global bans left out of the brawler and duo tables: '+esc([...BAN].join(', ')):''}</p></div>`}
 // the caster page fits the whole tab in the window (smaller screens: everything a bit smaller)
-function casFit(){const el=document.querySelector('.cas');if(!el||!window.CASTER_ONLY)return;el.style.zoom='';const r=el.getBoundingClientRect(),avH=window.innerHeight-r.top-window.scrollY*0-6,avW=document.documentElement.clientWidth-2*Math.max(8,r.left);
-  const z=Math.max(.55,Math.min(1,avH/r.height,avW/r.width));if(z<.995)el.style.zoom=z.toFixed(3)}
+// the caster page keeps its computer layout on every screen: narrower screens (laptop, tablet, phone) see it scaled down to fit the width, like Google Sheets
+const CAS_W=1800;
+function casFit(){if(!window.CASTER_ONLY)return;const h=document.documentElement;h.style.zoom='';const w=h.clientWidth||window.innerWidth;const z=Math.min(1,w/CAS_W);if(z<.999)h.style.zoom=z.toFixed(4)}
 window.addEventListener('resize',()=>{if(tab==='caster')casFit()});
 document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-casa],[data-casb],[data-casmap],[data-cascmp],[data-castrio],[data-cascv],[data-caspick],[data-cassort]');if(!t)return;const d=t.dataset;
   if(d.casa!=null){CAS.a=d.casa;if(CAS.b===CAS.a)CAS.b=''}else if(d.casb!=null){CAS.b=d.casb;if(CAS.a===CAS.b)CAS.a=''}else if(d.casmap!=null)CAS.map=d.casmap;
@@ -3814,7 +3836,7 @@ async function readPicks(mcp){ // Picks sheet: B = selected teams (+ tournament 
     return Object.keys(off).length>=2?{off,missing,types,tags,players:plr,selected:selT,meta,known,rank}:null;
   }catch(e){return null}
 }
-function convRow(r){const o=new Array(26).fill('');o[0]=r[23]||'';o[1]=r[0]||'';o[2]=r[2]||'';o[3]=r[3]||'';for(let i=4;i<=21;i++)o[i]=r[i]||'';o[22]=r[22]||'';return o}
+function convRow(r){const o=new Array(26).fill('');o[0]=r[23]||'';o[1]=r[0]||'';o[2]=r[2]||'';o[3]=r[3]||'';for(let i=4;i<=21;i++)o[i]=r[i]||'';o[22]=r[22]||'';if(r[31])o[32]=r[31];return o}
 // sheet rows up to this one are permanent (never edited): they are read once and cached. Everything below (the IMPORTRANGE part) is read again on every refresh, so edits to those rows are picked up.
 const PERM_ROWS=81050; // used only if the CONFIG tab cannot be read
 const sheetBtns=d=>{for(const id of ['sheetGo','sheetAll']){const b=$(id);if(b)b.disabled=d}};
@@ -5207,7 +5229,7 @@ DB=loadDb();
 (async()=>{
   const src=store.get('tvt:src');let st=null;
   if(src==='csv')st=loadStored();
-  else{const c=await idbGet('sheet');if(c&&c.ds&&c.ds.v===4&&c.ds.ev===2&&Array.isArray(c.ds.matches))st=c.ds}
+  else{const c=await idbGet('sheet');if(c&&c.ds&&c.ds.v===4&&c.ds.ev===3&&Array.isArray(c.ds.matches))st=c.ds}
   if(!st&&src!=='csv'){setStatus('Loading the automatic copy of the sheet…',false,10);st=await snapStart();setStatus('')}
   if(st&&Array.isArray(st.btypes)&&st.btypes.length>20)BTYPE=setTypes(st.btypes);
   build(st||JSON.parse(JSON.stringify(DEFAULT)),!!st);
@@ -5633,4 +5655,87 @@ body{padding-bottom:0!important}
 section.panel[aria-label="Data"]:has(#status:empty){display:none}
 .herotext{padding:7px 20px!important}.hero h1{font-size:22px!important;margin:0!important;letter-spacing:.06em}.heroinfo{display:none!important}
 .wrap{max-width:none!important;gap:8px!important}body{padding-top:8px!important}#statsview>.panel{padding:10px 12px!important;margin:0!important}
+
+/* ===== caster redesign (rev2): purple, straight corners, team boxes and the map between the tables ===== */
+html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{background:#0b0a10!important;font-family:Inter,system-ui,sans-serif!important}
+html body .cas *:not(img):not(svg):not(#_){border-radius:0!important}
+html body .cas :is(.cas-card,.cas-maps,.cas-top):not(#_){background:#121118!important;border:1px solid #24222f!important;box-shadow:none!important}
+html body .cas .cas-ch:not(#_){background:linear-gradient(90deg,rgba(168,85,247,.14),#121118);border-bottom:1px solid #24222f;color:#e5e3f0}
+html body .cas table th:not(#_){color:#6e6a85;letter-spacing:.08em}
+html body .cas table.cas-t td:not(#_){border-top:0;border-bottom:1px solid #1b1a24;background:transparent}
+html body .cas table.cas-t tr:nth-child(even) td:not(#_){background:rgba(255,255,255,.012)}
+html body .cas td.cas-w:not(#_){background:none!important;font-weight:800!important}
+html body .cas :is(.cas-seg,.cas-tg) button[aria-pressed=true]:not(#_){background:#a855f7!important;color:#fff!important;border-color:#a855f7!important}
+html body .cas img.bi:not(#_){border-radius:6px!important}
+/* head: team chips, Team A on the left and Team B on the right */
+html body .cas .cas-head2:not(#_){display:flex!important;justify-content:space-between;align-items:center;gap:12px;padding:8px 10px;background:#121118;border:1px solid #24222f;grid-template-areas:none}
+/* row of tables: [Team A picks | Team A box] · selected map · map box · duos · [Team B box | Team B picks] */
+html body .cas .cas-g7:not(#_){display:grid!important;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) 156px minmax(0,1fr) minmax(0,1.6fr)!important;align-items:stretch!important}
+html body .cas .cas-grp:not(#_){position:relative;display:grid;grid-template-columns:minmax(0,1fr) 140px;gap:6px;padding:8px;border:1px solid #2a2736;background:#0f0e15;min-width:0}
+html body .cas .cas-grpb:not(#_){grid-template-columns:140px minmax(0,1fr)}
+html body .cas .cas-grp::after{content:'';position:absolute;inset:-1px;pointer-events:none;background-image:linear-gradient(var(--c),var(--c)),linear-gradient(var(--c),var(--c)),linear-gradient(var(--c),var(--c)),linear-gradient(var(--c),var(--c)),linear-gradient(var(--c),var(--c)),linear-gradient(var(--c),var(--c)),linear-gradient(var(--c),var(--c)),linear-gradient(var(--c),var(--c));background-repeat:no-repeat;background-size:18px 2px,2px 18px,18px 2px,2px 18px,18px 2px,2px 18px,18px 2px,2px 18px;background-position:top left,top left,top right,top right,bottom left,bottom left,bottom right,bottom right}
+html body .cas .cas-g7 .cas-card:not(#_){border-top:1px solid #24222f!important;min-width:0}
+/* team box (like the Team Predictor) */
+html body .cas .cas-g7 .cas-ht:not(#_){display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;padding:20px 6px;background:linear-gradient(180deg,#18171f,#121118);border:1px solid #26232f;box-shadow:none;min-width:0}
+html body .cas .cas-g7 .cas-ht img.l52:not(#_){width:64px;height:64px;margin:0 0 2px}
+html body .cas .cas-g7 .cas-hn:not(#_){display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;max-width:100%}
+html body .cas .cas-g7 .cas-hn b:not(#_){font-size:15px;font-weight:800;color:#fff;line-height:1.15;white-space:normal;overflow-wrap:anywhere}
+html body .cas .cas-g7 .cas-hn small:not(#_){font-size:13px;color:#a8a3b8}
+html body .cas .cas-g7 .cas-hw:not(#_){display:flex;flex-direction:column;align-items:center;gap:6px;margin:18px 0 0;text-align:center}
+html body .cas .cas-g7 .cas-hw span:not(#_){font-size:30px;font-weight:800;background:none!important;padding:0;line-height:1}
+html body .cas .cas-g7 .cas-hw small:not(#_){font-size:12px;color:#a8a3b8}
+/* map box */
+html body .cas .cas-g7 .cas-mid:not(#_){display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:18px 12px;background:linear-gradient(180deg,color-mix(in srgb,var(--m) 24%,#16151f),#141219);border:1px solid color-mix(in srgb,var(--m) 75%,#2c2a3a);text-align:center;min-width:0}
+html body .cas .cas-g7 .cas-mid img.cas-mimg:not(#_){width:92px;height:auto;max-height:none}
+html body .cas .cas-g7 .cas-mthumbs:not(#_){display:flex;flex-wrap:wrap;justify-content:center;gap:4px}
+html body .cas .cas-g7 .cas-mwp:not(#_){display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;flex:0 0 auto}
+html body .cas .cas-g7 .cas-mt:not(#_){display:flex;flex-direction:column;align-items:center;gap:4px}
+html body .cas .cas-g7 .cas-mt span:not(#_){font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#d8d4e6;display:flex;align-items:center;gap:5px}
+html body .cas .cas-g7 .cas-mt b:not(#_){font-size:18px;font-weight:800;color:#fff}
+html body .cas .cas-g7 .cas-wpt:not(#_){font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#a8a3c0;font-weight:700;margin-top:4px}
+html body .cas .cas-g7 .cas-wpr:not(#_){display:grid;grid-template-columns:1fr 1fr;gap:6px 8px;width:100%;align-items:center}
+html body .cas .cas-g7 .cas-wpr b:not(#_){font-size:22px;font-weight:800;color:#fff!important}
+html body .cas .cas-g7 .cas-wpr b:first-child{grid-column:1;grid-row:1;text-align:left}
+html body .cas .cas-g7 .cas-wpr b:last-child{grid-column:2;grid-row:1;text-align:right}
+html body .cas .cas-g7 .cas-wpb:not(#_){grid-column:1/3;grid-row:2;height:12px;display:flex;gap:2px;width:100%}
+html body .cas .cas-g7 .cas-wpb i:first-child{background:#e5e3f0!important}
+html body .cas .cas-g7 .cas-wpb i:last-child{background:#d4b483!important}
+/* brawler tables: 38px images (32px in duos), 62px rows, K/D + damage under the name */
+html body .cas .cas-g7 table.cas-t td:not(#_){height:62px;padding-top:0!important;padding-bottom:0!important}
+html body .cas .cas-g7 table.cas-t td img.bi:not(#_){width:38px;height:38px}
+html body .cas .cas-g7 .cas-duo img.bi:not(#_):not(#__){width:32px;height:32px}
+html body .cas .cas-g7 th.cw:not(#_){width:40px}
+html body .cas .cas-g7 th.cw2:not(#_){width:45px}
+html body .cas .cas-g7 :is(th,td).rk:not(#_){width:18px;padding-right:2px!important}
+html body .cas .cas-g7 .cas-br:not(#_){display:flex;align-items:center;gap:8px;min-width:0}
+html body .cas .cas-nm{display:flex;flex-direction:column;justify-content:center;min-width:0;line-height:1.2}
+html body .cas .cas-nm>span:not(#_){display:block;-webkit-line-clamp:unset;line-height:1.25;overflow:hidden;text-overflow:ellipsis}
+html body .cas .cas-kd{display:block;margin-top:3px;font-size:10px;font-weight:600;color:#6e6a85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0}
+html body .cas .cas-duo{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0}
+html body .cas .cas-duo .cas-kd{margin:0}
+/* tables below: bigger rows and logos, the two chosen teams outlined in their colour */
+html body .cas .cas-g5 table.cas-t td:not(#_){height:48px;padding-top:0!important;padding-bottom:0!important}
+html body .cas .cas-g5 table.cas-t td img:not(#_){width:28px;height:28px}
+html body .cas .cas-g5 .cas-tm:not(#_){display:flex;align-items:center;gap:9px;min-width:0}
+html body .cas .cas-g5 .cas-tm>span:not(#_){display:block;-webkit-line-clamp:unset;white-space:normal;line-height:1.25;overflow:visible}
+html body .cas .cas-g5 tr.cas-hl td:not(#_):not(#__){background:transparent;box-shadow:inset 0 2px 0 var(--rc),inset 0 -2px 0 var(--rc)}
+html body .cas .cas-g5 tr.cas-hl td:first-child:not(#_):not(#__){box-shadow:inset 2px 0 0 var(--rc),inset 0 2px 0 var(--rc),inset 0 -2px 0 var(--rc)}
+html body .cas .cas-g5 tr.cas-hl td:last-child:not(#_):not(#__){box-shadow:inset -2px 0 0 var(--rc),inset 0 2px 0 var(--rc),inset 0 -2px 0 var(--rc)}
+html body .cas .cas-g5 tr.cas-hl .cas-tm span:not(#_){color:#fff;font-weight:800}
+/* rivals: no colour line, head to head on top, mixed rosters on one line */
+html body .cas .cas-rv:not(#_),html body .cas .cas-sub:not(#_){border-top:1px solid #24222f!important}
+html body .cas .cas-rv .cas-sub:not(#_){border-top:0!important}
+html body .cas .cas-mix .cas-usr{flex:0 0 28px}
+html body .cas .cas-mix .cas-nm>span:not(#_){color:#a8a3b8;font-size:12px}
+html body .cas .cas-mix .cas-kd{max-width:150px}
+html body .cas .cas-h2h{padding:10px 12px;border-bottom:1px solid #24222f;background:rgba(168,85,247,.06)}
+html body .cas .cas-h2h .h2t{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#a8a3c0;margin-bottom:8px}
+html body .cas .cas-h2h .h2t span{display:flex;align-items:center;gap:6px;color:#e5e3f0;letter-spacing:.04em;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html body .cas .cas-h2h .h2t img:not(#_){width:20px;height:20px}
+html body .cas .cas-h2h .h2r{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+html body .cas .cas-h2h .h2c{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px;background:#15131d;border:1px solid #26232f}
+html body .cas .cas-h2h .h2c small{font-size:10px;color:#8a86a0;text-transform:uppercase;letter-spacing:.08em}
+html body .cas .cas-h2h .h2c b{font-size:20px;font-weight:800;color:#fff}
+html body .cas .cas-h2h .h2c em{font-style:normal;font-size:12px;font-weight:800;color:#6e6a85}
 </style>
