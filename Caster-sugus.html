@@ -35,7 +35,7 @@ window.CASTER_ONLY=true;window.API_SHEET_ID="19F29O9Sxjm17Tt6i815t_Wk6M4SkHTsgRw
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2314111d'/%3E%3Cpath d='M4 4h14v4H8v10H4zM60 4v14h-4V8H46V4zM4 60V46h4v10h10v4zM60 60H46v-4h10V46h4z' fill='%23c084fc'/%3E%3Crect x='26' y='15' width='12' height='22' rx='6' fill='%23c084fc'/%3E%3Cpath d='M19 31a13 13 0 0 0 26 0' fill='none' stroke='%23fff' stroke-width='4'/%3E%3Crect x='30' y='44' width='4' height='6' fill='%23fff'/%3E%3Crect x='23' y='49' width='18' height='4' fill='%23fff'/%3E%3C/svg%3E">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@500;600;700&display=swap">
 <style>
 /* Layout: single working column */
 :root{
@@ -3314,6 +3314,7 @@ function casterTab(P){
   const vals=CAS.cmp==='reg'?regs:tours,cur=CAS.cmp==='reg'?CAS.cvR:CAS.cvT,allT=casTeams();
   const top=`<div class="cas-top"><label>Compare</label><span class="cas-seg">${[...(P?[['pick','Select teams']]:[]),['tour','Tournament'],['reg','Region']].map(([v,l])=>`<button type="button" data-cascmp="${v}" aria-pressed="${CAS.cmp===v}">${l}</button>`).join('')}</span>
     <span class="cas-opt">${P&&CAS.cmp==='pick'?allT.map(t=>`<button type="button" class="cas-pk${(CAS.pick||[]).includes(t)?' on':''}" data-caspick="${esc(t)}" title="${esc(t)}">${logo(t,'l20')}</button>`).join(''):vals.map(v=>`<button type="button" data-cascv="${esc(v)}" aria-pressed="${v===cur}">${esc(v)}</button>`).join('')}</span><small>${G.length} teams</small><label style="margin-left:12px">Sets</label><span class="cas-seg">${[['all','All sets'],['off','Official trios']].map(([v,l])=>`<button type="button" data-castrio="${v}" aria-pressed="${(CAS.trio||'all')===v}" title="${v==='off'?'Only the sets where each team plays with its 3 players of the Picks sheet':'Every set of each team, with any trio'}">${l}</button>`).join('')}</span>
+    ${P?'':`<button type="button" class="cas-mtb${CAS.mt?' on':''}" data-castg="1" aria-expanded="${!!CAS.mt}" title="Choose the map and the two teams"><span>Map &amp; teams</span><b>${esc(MAP)}</b><i>·</i><b>${esc(A||'–')}</b><em>vs</em><b>${esc(B||'–')}</b><u>${CAS.mt?'▴ close':'▾ change'}</u></button>`}
     <span class="cas-dt"><label>Dates</label><input type="date" data-casd="from" value="${R.from}"><i>–</i><input type="date" data-casd="to" value="${R.to}"></span></div>`;
   // caster page: the map buttons are map previews (image + name); the chosen map stands out
   const feat=!P,mpic=m=>IMGS['bg'+mkey(m)]||IMGS[mkey(m)]||'';
@@ -3354,17 +3355,20 @@ const CAS_USR='<svg class="cas-usr" viewBox="0 0 24 24" width="26" height="26" f
     const o_=t===A?B:A,Hh=o_?rows.filter(x=>x.t===t&&x.o===o_):[],Hm=Hh.filter(onMap),hc=(L,lb)=>{const w=L.reduce((a,x)=>a+x.win,0);return `<div class="h2c"><small>${lb}</small><b>${L.length?w+'–'+(L.length-w):'–'}</b><em${L.length?` style="${casWr(w/L.length,L.length)}"`:''}>${L.length?casPc(w,L.length):'no sets'}</em></div>`};
     const h2h=o_?`<div class="cas-h2h" title="Sets between ${esc(t)} and ${esc(o_)} in these dates"><div class="h2t">Head to head <span>vs ${logo(o_,'l20')} ${esc(o_)}</span></div><div class="h2r">${hc(Hm,many?'These maps':'This map')}${hc(Hh,'All maps')}</div></div>`:'';
     return `<div class="cas-sub" style="--c:${col}">${head(`${logo(t,'l20')} Rivals`,casTog(id,[['n','Sets'],['wr','Win rate']],'n'),col,'the 5 rivals '+t+' played the most sets against (every map); rivals that are not in the list are shown by their 3 players')}${h2h}<table class="cas-t"><tbody>${rs||'<tr><td colspan="4" class="msg">No sets.</td></tr>'}</tbody></table></div>`};
-  return `<div class="cas" title="">${top}${maps_}<div class="cas-head cas-head2">${chips(A,'casa')}${chips(B,'casb')}</div>${P&&P.extra?P.extra:''}
+  return `<div class="cas" title="">${top}${P||CAS.mt?maps_+`<div class="cas-head cas-head2">${chips(A,'casa')}${chips(B,'casb')}</div>`:''}${P&&P.extra?P.extra:''}
     <div class="cas-g4 cas-g7"><div class="cas-grp" style="--c:${tcA}">${pkT('pkA',`${logo(A,'l20')} ${esc(A)}`,RA,tcA)}${hdr(A,hA,tcA)}</div>${pkT('pkG',(many?'Selected maps':'Selected map')+' · total picks',RG,'var(--accent,#d63a50)')}${mid}${duoT()}<div class="cas-grp cas-grpb" style="--c:${tcB}">${hdr(B,hB,tcB,1)}${pkT('pkB',`${logo(B,'l20')} ${esc(B)}`,RB,tcB)}</div></div>
     <div class="cas-g5"><div class="cas-card cas-rv">${rivT(A,tcA)}</div>${teamT('wMap',many?'Win rate · these maps':'Win rate · '+esc(MAP),onMap,'sets on '+(many?MAPS.join(', '):MAP))}${teamT('wMode',MDS.size>1?'Win rate · their modes':'Win rate · '+esc(MD),x=>MDS.has(x.md),'sets on every map of '+[...MDS].join(', '))}${teamT('wAll','Win rate · all maps',()=>true,'sets on every map and mode')}<div class="cas-card cas-rv">${rivT(B,tcB)}</div></div>
     <p class="cas-foot">Sets from ${fmtDate(R.from)} to ${fmtDate(R.to)} (single games and draws left out) · pick rate = share of the sets with that brawler · Team A in blue, Team B in red${BAN.size?' · global bans left out of the brawler and duo tables: '+esc([...BAN].join(', ')):''}</p></div>`}
 // the caster page fits the whole tab in the window (smaller screens: everything a bit smaller)
 // the caster page keeps its computer layout on every screen: narrower screens (laptop, tablet, phone) see it scaled down to fit the width, like Google Sheets
 const CAS_W=1800;
-function casFit(){if(!window.CASTER_ONLY)return;const h=document.documentElement;h.style.zoom='';const w=h.clientWidth||window.innerWidth;const z=Math.min(1,w/CAS_W);if(z<.999)h.style.zoom=z.toFixed(4)}
+function casFit(){if(!window.CASTER_ONLY)return;const h=document.documentElement;h.style.zoom='';const w=h.clientWidth||window.innerWidth;let z=Math.min(1,w/CAS_W);
+  // on a computer the whole page fits the window (height too), so everything is seen at once
+  if(w>=1000){const H=h.scrollHeight;if(H>window.innerHeight)z=Math.min(z,Math.max(.6,(window.innerHeight-2)/H))}
+  if(z<.999)h.style.zoom=z.toFixed(4)}
 window.addEventListener('resize',()=>{if(tab==='caster')casFit()});
-document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-casa],[data-casb],[data-casmap],[data-cascmp],[data-castrio],[data-cascv],[data-caspick],[data-cassort]');if(!t)return;const d=t.dataset;
-  if(d.casa!=null){CAS.a=d.casa;if(CAS.b===CAS.a)CAS.b=''}else if(d.casb!=null){CAS.b=d.casb;if(CAS.a===CAS.b)CAS.a=''}else if(d.casmap!=null)CAS.map=d.casmap;
+document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-casa],[data-casb],[data-casmap],[data-cascmp],[data-castrio],[data-cascv],[data-caspick],[data-cassort],[data-castg]');if(!t)return;const d=t.dataset;
+  if(d.casa!=null){CAS.a=d.casa;if(CAS.b===CAS.a)CAS.b=''}else if(d.casb!=null){CAS.b=d.casb;if(CAS.a===CAS.b)CAS.a=''}else if(d.casmap!=null){CAS.map=d.casmap;CAS.mt=false}else if(d.castg!=null)CAS.mt=!CAS.mt;
   else if(d.cascmp!=null)CAS.cmp=d.cascmp;else if(d.cascv!=null){if(CAS.cmp==='reg')CAS.cvR=d.cascv;else CAS.cvT=d.cascv}
   else if(d.caspick!=null){CAS.pick=CAS.pick||[];const i=CAS.pick.indexOf(d.caspick);if(i>=0)CAS.pick.splice(i,1);else CAS.pick.push(d.caspick)}
   else if(d.castrio!=null)CAS.trio=d.castrio;
@@ -5738,4 +5742,46 @@ html body .cas .cas-h2h .h2c{display:flex;flex-direction:column;align-items:cent
 html body .cas .cas-h2h .h2c small{font-size:10px;color:#8a86a0;text-transform:uppercase;letter-spacing:.08em}
 html body .cas .cas-h2h .h2c b{font-size:20px;font-weight:800;color:#fff}
 html body .cas .cas-h2h .h2c em{font-style:normal;font-size:12px;font-weight:800;color:#6e6a85}
+
+/* ===== caster rev3: the whole page at a glance (compact) + letters: Inter for data, Barlow Condensed for titles ===== */
+:root{--body:Inter,system-ui,sans-serif;--display:'Barlow Condensed',Inter,sans-serif;--mono:Inter,system-ui,sans-serif}
+html body .cas,html body .cas *:not(#_){font-family:Inter,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+html body .cas :is(.cas-ch .cas-ln span,.cas-hn b,.cas-hw span,.cas-mt b,.cas-wpr b,.h2c b,th):not(#_):not(#__),.hero h1{font-family:'Barlow Condensed',Inter,sans-serif!important;letter-spacing:.04em}
+html body .cas .cas-ch .cas-ln span:not(#_):not(#__){font-size:15px;font-weight:700;letter-spacing:.08em}
+html body .cas th:not(#_):not(#__){font-size:12px;font-weight:600}
+html body .cas .cas-g7 .cas-hn b:not(#_):not(#__){font-size:21px;font-weight:700}
+html body .cas .cas-g7 .cas-hw span:not(#_):not(#__){font-size:40px;font-weight:700}
+html body .cas .cas-g7 .cas-mt b:not(#_):not(#__){font-size:22px;font-weight:700}
+html body .cas .cas-g7 .cas-wpr b:not(#_):not(#__){font-size:28px;font-weight:700}
+html body .cas .cas-h2h .h2c b:not(#_):not(#__){font-size:18px;font-weight:700}
+.hero h1{font-size:22px!important;font-weight:700!important;letter-spacing:.12em!important}
+.hero .herotext{padding:4px 20px!important}
+/* the map strip and the team chips open from one button */
+html body .cas .cas-top:not(#_){padding:5px 10px;margin-bottom:6px}
+html body .cas .cas-mtb{display:inline-flex;align-items:center;gap:7px;margin-left:auto;margin-right:14px;font:inherit;font-size:12.5px;color:#e5e3f0;background:#1c1828;border:1px solid #a855f7;padding:5px 12px;cursor:pointer}
+html body .cas .cas-mtb:hover,html body .cas .cas-mtb.on{background:#2a1d40}
+html body .cas .cas-mtb span{color:#c4b5fd;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:10.5px;margin-right:4px}
+html body .cas .cas-mtb :is(em,i){font-style:normal;color:#6e6a85}
+html body .cas .cas-mtb u{text-decoration:none;color:#c4b5fd;margin-left:6px}
+html body .cas .cas-maps:not(#_),html body .cas .cas-head2:not(#_){margin-bottom:6px}
+/* brawler tables: 46px rows, 34px images (28px in duos) */
+html body .cas .cas-g7:not(#_){margin-bottom:6px}
+html body .cas .cas-g7 table.cas-t td:not(#_):not(#__){height:46px}
+html body .cas .cas-g7 table.cas-t td img.bi:not(#_):not(#__){width:34px;height:34px}
+html body .cas .cas-g7 .cas-duo img.bi:not(#_):not(#__):not(#___){width:28px;height:28px}
+html body .cas .cas-g7 .cas-duo:not(#_){flex-direction:row;align-items:center;gap:8px}
+html body .cas .cas-g7 .cas-ht img.l52:not(#_):not(#__){width:56px;height:56px}
+html body .cas .cas-g7 .cas-mid img.cas-mimg:not(#_):not(#__){width:78px}
+html body .cas .cas-g7 th.cw2:not(#_):not(#__){width:50px}
+html body .cas .cas-g7 th.cw:not(#_):not(#__){width:38px}
+/* tables below: 40px rows, 22px logos, K/D + damage under the team name */
+html body .cas .cas-g5 table.cas-t td:not(#_):not(#__){height:40px}
+html body .cas .cas-g5 table.cas-t td img:not(#_):not(#__){width:22px;height:22px}
+html body .cas .cas-g5 .cas-kd:not(#_){margin-top:1px}
+html body .cas .cas-mix .cas-nm>span:not(#_):not(#__){display:none}
+html body .cas .cas-mix .cas-kd:not(#_):not(#__){font-size:11.5px;color:#a8a3b8;max-width:170px;margin:0}
+html body .cas .cas-h2h:not(#_){padding:6px 10px}
+html body .cas .cas-h2h .h2t:not(#_){margin-bottom:5px}
+html body .cas .cas-h2h .h2c:not(#_){padding:3px;flex-direction:row;justify-content:center;align-items:baseline;gap:8px}
+html body .cas .cas-foot:not(#_){margin:4px 0 0}
 </style>
